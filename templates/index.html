@@ -4,21 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Project Dot Race</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html {
+    html, body {
       min-height: 100%;
-      background:
-        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 100, 0, 0.07) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(120, 60, 200, 0.05) 0%, transparent 70%),
-        linear-gradient(160deg, #0e0c17 0%, #060509 100%);
-      background-attachment: fixed;
-    }
-    body {
-      min-height: 100%;
+      background: #0a0810;
       color: white;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Segoe UI', system-ui, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -28,272 +24,293 @@
       padding: 52px 16px 48px;
     }
 
-    /* ── Header ── */
+    /* ── Header ─────────────────────────────────────────────────── */
     .header-bar {
       display: flex;
-      align-items: center;
-      margin-bottom: 18px;
-      padding: 0 4px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding: 0 2px;
     }
+    .header-text { flex: 1; }
     .app-title {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.6px;
-      background: linear-gradient(135deg, #ffe08a 0%, #ffb347 60%, #ff8c00 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: drop-shadow(0 0 18px rgba(255, 160, 40, 0.35));
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+    }
+    .title-plain { color: #e8dfc8; }
+    .title-gold  { color: #c8973a; }
+    .app-subtitle {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.28);
+      margin-top: 5px;
     }
     .add-btn {
-      width: 34px; height: 34px;
+      width: 44px; height: 44px;
       border-radius: 50%;
-      background: rgba(255, 128, 10, 0.15);
-      border: 1px solid rgba(255, 128, 10, 0.30);
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
       cursor: pointer;
-      color: rgb(255, 180, 60);
-      font-size: 22px;
+      color: rgba(255,255,255,0.75);
+      font-size: 24px;
       font-weight: 300;
-      line-height: 1;
       display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 4px;
       transition: all 0.2s;
-      box-shadow: 0 0 12px rgba(255, 128, 10, 0.15);
     }
-    .add-btn:hover {
-      background: rgba(255, 128, 10, 0.28);
-      box-shadow: 0 0 20px rgba(255, 128, 10, 0.30);
-      transform: scale(1.05);
-    }
+    .add-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.22); }
 
-    /* ── Cards ── */
+    /* ── Cards ──────────────────────────────────────────────────── */
     .card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 128, 10, 0.20);
-      border-radius: 24px;
+      background: #111019;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
       margin-bottom: 14px;
       overflow: hidden;
-      box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.45),
-        0 1px 0 rgba(255, 255, 255, 0.05) inset,
-        0 0 0 1px rgba(255, 128, 10, 0.08) inset;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .card-title {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(255, 184, 72, 0.6);
-      padding: 18px 18px 0;
     }
 
-    /* ── Track canvas ── */
-    #trackCard {
-      padding: 0;
-      border-color: rgba(255, 128, 10, 0.30);
-      box-shadow:
-        0 0 40px rgba(255, 100, 0, 0.12),
-        0 8px 40px rgba(0, 0, 0, 0.6),
-        0 1px 0 rgba(255, 255, 255, 0.05) inset;
-      animation: trackCardPulse 4s ease-in-out infinite;
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 18px 12px;
     }
-    @keyframes trackCardPulse {
-      0%, 100% { box-shadow: 0 0 30px rgba(255, 100, 0, 0.10), 0 8px 40px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.05) inset; }
-      50%       { box-shadow: 0 0 55px rgba(255, 100, 0, 0.22), 0 8px 40px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.05) inset; }
+    .section-icon { flex-shrink: 0; }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+
+    /* Section accent colors */
+    .racers-accent  { color: #c8973a; }
+    .bullpen-accent { color: #c05040; }
+    .retired-accent { color: #9a8050; }
+    .manage-accent  { color: #c8973a; }
+
+    /* ── Track canvas ────────────────────────────────────────────── */
+    .track-card {
+      padding: 0;
+      border-color: rgba(200, 140, 30, 0.25);
+      background: #0c0a0e;
     }
     #trackCanvas {
       display: block;
       width: 100%;
       touch-action: none;
       cursor: grab;
-      border-radius: 24px;
+      border-radius: 20px;
     }
     #trackCanvas.dragging { cursor: grabbing; }
 
-    /* ── Racers card ── */
-    #racersList { padding: 12px 0 14px; }
+    /* ── Racers ──────────────────────────────────────────────────── */
     .racer-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 16px;
-      margin: 0 10px 6px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.03);
+      margin: 0 12px 8px;
       border-radius: 14px;
-      border-left: 3px solid transparent;
-      position: relative;
-      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
     }
-    .racer-row::before {
-      content: '';
-      position: absolute; inset: 0;
-      border-radius: 14px;
-      opacity: 0.08;
-      pointer-events: none;
+    .racer-dot { border-radius: 50%; flex-shrink: 0; }
+    .racer-body { flex: 1; min-width: 0; }
+    .racer-top {
+      display: flex; align-items: baseline;
+      gap: 8px; margin-bottom: 8px;
     }
-    .dot-circle { border-radius: 50%; flex-shrink: 0; }
-    .racer-info { flex: 1; min-width: 0; }
-    .racer-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
-    .racer-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
-    .racer-pct  { font-size: 13px; font-weight: 700; flex-shrink: 0; }
-    .progress-bar-bg {
-      height: 3px; background: rgba(255,255,255,0.10); border-radius: 2px; overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%; border-radius: 2px;
-      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .empty-label { font-size: 14px; color: rgba(255,255,255,0.25); padding: 4px 18px 6px; }
+    .racer-name { font-size: 17px; font-weight: 600; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .racer-pct  { font-size: 16px; font-weight: 700; flex-shrink: 0; }
+    .racer-chevron { color: rgba(255,255,255,0.22); font-size: 16px; flex-shrink: 0; margin-left: 2px; }
+    .progress-track { height: 3px; background: rgba(255,255,255,0.10); border-radius: 2px; overflow: hidden; }
+    .progress-fill  { height: 100%; border-radius: 2px; transition: width 0.4s; }
+    .empty-label { font-size: 14px; color: rgba(255,255,255,0.22); padding: 4px 18px 16px; }
 
-    /* ── Side cards ── */
+    /* ── Side cards ─────────────────────────────────────────────── */
     .side-cards { display: flex; gap: 12px; margin-bottom: 14px; }
     .side-cards .card { flex: 1; margin-bottom: 0; }
-    .side-body { padding: 10px 14px 16px; display: flex; flex-direction: column; gap: 7px; }
-    .side-row { display: flex; align-items: center; gap: 9px; }
-    .side-name {
-      font-size: 13px; font-weight: 500;
-      color: rgba(255,255,255,0.75);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
+    .bullpen-card { border-color: rgba(180, 70, 60, 0.28); }
+    .retired-card { border-color: rgba(150, 110, 30, 0.28); }
 
-    /* ── Manage card ── */
-    #manageList { padding: 10px 0 4px; }
-    .project-row {
-      padding: 14px;
-      margin: 0 10px 8px;
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid rgba(255, 128, 10, 0.14);
-      border-radius: 16px;
-      transition: border-color 0.2s;
+    .side-body { padding: 0 0 8px; }
+    .side-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
-    .project-row:hover { border-color: rgba(255, 128, 10, 0.28); }
-    .row-main { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .side-item:last-child { border-bottom: none; }
+    .side-dot { border-radius: 50%; flex-shrink: 0; }
+    .side-name { flex: 1; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.82); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .side-chev { color: rgba(255,255,255,0.20); font-size: 14px; }
+
+    /* ── Manage ──────────────────────────────────────────────────── */
+    .manage-body { padding: 4px 0 8px; }
+    .project-row {
+      padding: 14px 16px;
+      margin: 0 12px 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+    }
+    .row-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .manage-dot { border-radius: 50%; flex-shrink: 0; }
     .name-input {
       flex: 1;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 8px;
-      color: white; font-size: 15px; font-weight: 600;
-      padding: 5px 9px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
       font-family: inherit;
-      transition: all 0.15s;
+      padding: 0;
     }
-    .name-input:focus { outline: none; background: rgba(255,255,255,0.11); border-color: rgba(255, 128, 10, 0.45); }
-    .row-pct { font-size: 13px; font-weight: 700; min-width: 34px; text-align: right; }
+    .name-input:focus { outline: none; }
     .delete-btn {
       background: none; border: none; cursor: pointer;
-      color: rgba(255, 80, 80, 0.50); font-size: 13px; padding: 4px 2px;
-      line-height: 1; transition: color 0.15s;
+      color: rgba(255,255,255,0.22);
+      font-size: 16px; line-height: 1;
+      padding: 2px 0;
+      transition: color 0.15s;
     }
-    .delete-btn:hover { color: rgba(255, 80, 80, 0.90); }
+    .delete-btn:hover { color: rgba(255, 80, 80, 0.8); }
 
-    /* Lane segmented control */
-    .lane-selector { display: flex; gap: 5px; }
+    /* Lane buttons */
+    .lane-selector { display: flex; gap: 8px; }
     .lane-btn {
-      flex: 1; padding: 6px 4px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255,255,255,0.04);
-      color: rgba(255,255,255,0.38);
-      font-size: 11px; font-weight: 700; font-family: inherit;
-      letter-spacing: 0.02em;
-      cursor: pointer; transition: all 0.15s;
+      flex: 1; padding: 9px 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.35);
+      font-size: 12px; font-weight: 600; font-family: inherit;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.18s;
     }
-    .lane-btn:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.75); }
-    .lane-btn.active {
-      background: rgba(255, 128, 10, 0.20);
-      border-color: rgba(255, 128, 10, 0.50);
-      color: rgb(255, 184, 72);
-      box-shadow: 0 0 10px rgba(255, 128, 10, 0.15);
-    }
+    .lane-btn:hover:not(.active) { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.65); }
 
     /* Progress row */
-    .progress-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-    .progress-label { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255, 184, 72, 0.55); white-space: nowrap; }
-    .progress-slider { flex: 1; cursor: pointer; }
-    .progress-val { font-size: 12px; font-weight: 700; min-width: 30px; text-align: right; }
+    .prog-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+    .prog-label { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; color: rgba(255,184,72,0.45); white-space: nowrap; }
+    .prog-slider { flex: 1; cursor: pointer; }
+    .prog-val { font-size: 12px; font-weight: 700; min-width: 30px; text-align: right; }
 
-    /* ── Add modal ── */
+    /* ── Modal ───────────────────────────────────────────────────── */
     .modal-overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.70);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex; align-items: center; justify-content: center;
       z-index: 100;
       opacity: 0; pointer-events: none;
-      transition: opacity 0.20s;
+      transition: opacity 0.18s;
     }
     .modal-overlay.visible { opacity: 1; pointer-events: all; }
     .modal {
-      background: rgba(22, 18, 32, 0.95);
-      border: 1px solid rgba(255, 128, 10, 0.30);
+      background: #18141e;
+      border: 1px solid rgba(200, 150, 40, 0.28);
       border-radius: 22px; padding: 26px;
       width: min(320px, 88vw);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.8);
     }
-    .modal-title { font-size: 18px; font-weight: 700; color: rgb(255, 217, 140); margin-bottom: 16px; letter-spacing: -0.3px; }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 500; color: #e8dfc8; margin-bottom: 16px; }
     .modal-input {
       width: 100%;
       background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 11px; color: white;
       font-size: 16px; font-family: inherit;
-      padding: 11px 13px; margin-bottom: 18px;
-      transition: border-color 0.15s;
+      padding: 12px 14px; margin-bottom: 18px;
     }
-    .modal-input:focus { outline: none; border-color: rgba(255, 128, 10, 0.55); }
+    .modal-input:focus { outline: none; border-color: rgba(200, 150, 40, 0.55); }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
     .modal-cancel {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.55);
-      border-radius: 11px; padding: 9px 18px;
+      color: rgba(255,255,255,0.5);
+      border-radius: 11px; padding: 10px 18px;
       font-size: 15px; font-family: inherit; cursor: pointer;
-      transition: all 0.15s;
     }
-    .modal-cancel:hover { background: rgba(255,255,255,0.09); }
     .modal-add {
-      background: linear-gradient(135deg, rgba(255, 140, 20, 0.35), rgba(255, 80, 0, 0.25));
-      border: 1px solid rgba(255, 128, 10, 0.50);
-      color: rgb(255, 200, 80);
-      border-radius: 11px; padding: 9px 20px;
+      background: rgba(200, 150, 30, 0.22);
+      border: 1px solid rgba(200, 150, 30, 0.50);
+      color: #f0c060;
+      border-radius: 11px; padding: 10px 20px;
       font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer;
-      box-shadow: 0 0 16px rgba(255, 128, 10, 0.20);
-      transition: all 0.15s;
+      transition: background 0.15s;
     }
-    .modal-add:hover { box-shadow: 0 0 24px rgba(255, 128, 10, 0.35); transform: translateY(-1px); }
+    .modal-add:hover { background: rgba(200, 150, 30, 0.35); }
   </style>
 </head>
 <body>
 <div id="app">
+
+  <!-- Header -->
   <div class="header-bar">
-    <span class="app-title">Project Dot Race</span>
+    <div class="header-text">
+      <h1 class="app-title">
+        <span class="title-plain">Project </span><span class="title-gold">Dot Race</span>
+      </h1>
+      <p class="app-subtitle">TRACK PROGRESS. DRIVE RESULTS.</p>
+    </div>
     <button class="add-btn" id="addBtn">+</button>
   </div>
 
-  <div class="card" id="trackCard">
+  <!-- Track -->
+  <div class="card track-card">
     <canvas id="trackCanvas"></canvas>
   </div>
 
+  <!-- Racers -->
   <div class="card">
-    <div class="card-title">Racers</div>
+    <div class="section-header">
+      <svg class="section-icon racers-accent" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+      </svg>
+      <span class="section-label racers-accent">RACERS</span>
+    </div>
     <div id="racersList"></div>
   </div>
 
+  <!-- Bullpen + Retired -->
   <div class="side-cards">
-    <div class="card">
-      <div class="card-title">Bullpen</div>
+    <div class="card bullpen-card">
+      <div class="section-header">
+        <svg class="section-icon bullpen-accent" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/>
+        </svg>
+        <span class="section-label bullpen-accent">BULLPEN</span>
+      </div>
       <div class="side-body" id="bullpenList"></div>
     </div>
-    <div class="card">
-      <div class="card-title">Retired</div>
+    <div class="card retired-card">
+      <div class="section-header">
+        <svg class="section-icon retired-accent" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
+        </svg>
+        <span class="section-label retired-accent">RETIRED</span>
+      </div>
       <div class="side-body" id="retiredList"></div>
     </div>
   </div>
 
+  <!-- Manage -->
   <div class="card">
-    <div class="card-title">Manage</div>
-    <div id="manageList"></div>
+    <div class="section-header">
+      <svg class="section-icon manage-accent" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.63-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+      </svg>
+      <span class="section-label manage-accent">MANAGE</span>
+    </div>
+    <div class="manage-body" id="manageList"></div>
   </div>
+
 </div>
 
 <!-- Add modal -->
@@ -309,12 +326,12 @@
 </div>
 
 <script>
-// ─── State ──────────────────────────────────────────────────────────────────
+// ─── State ───────────────────────────────────────────────────────────────────
 let projects = [];
 let dotLanePos = {};
 let drag = null;
 
-// ─── API ────────────────────────────────────────────────────────────────────
+// ─── API ─────────────────────────────────────────────────────────────────────
 const api = {
   async list()          { return (await fetch('/api/projects')).json(); },
   async add(name)       { return (await fetch('/api/projects', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name}) })).json(); },
@@ -322,10 +339,10 @@ const api = {
   async del(id)         { await fetch(`/api/projects/${id}`, { method:'DELETE' }); },
 };
 
-// ─── Canvas setup ────────────────────────────────────────────────────────────
+// ─── Canvas ───────────────────────────────────────────────────────────────────
 const canvas = document.getElementById('trackCanvas');
 const ctx    = canvas.getContext('2d');
-const TRACK_H = 230;
+const TRACK_H = 340;
 const DPR     = window.devicePixelRatio || 1;
 let W = 0;
 
@@ -343,16 +360,12 @@ function resizeCanvas() {
 
 // ─── Geometry ────────────────────────────────────────────────────────────────
 function geo() {
-  const M  = 10;
-  const ox = M, oy = M, ow = W - 2*M, oh = TRACK_H - 2*M;
-  return {
-    outer:   { x: ox,    y: oy,    w: ow,     h: oh     },
-    inner:   { x: ox+28, y: oy+28, w: ow-56,  h: oh-56  },
-    mid:     { x: ox+14, y: oy+14, w: ow-28,  h: oh-28  },
-    infield: { x: ox+54, y: oy+42, w: ow-108, h: oh-84  },
-    cx: ox + ow/2,
-    cy: oy + oh/2,
-  };
+  const M = 10;
+  const outer   = { x: M,      y: M,      w: W - 2*M,      h: TRACK_H - 2*M      };
+  const ring2   = { x: M+24,   y: M+24,   w: W - 2*(M+24), h: TRACK_H - 2*(M+24) };
+  const inner   = { x: M+48,   y: M+48,   w: W - 2*(M+48), h: TRACK_H - 2*(M+48) };
+  const infield = { x: M+62,   y: M+56,   w: W - 2*(M+62), h: TRACK_H - 2*(M+56) };
+  return { outer, ring2, inner, infield, cx: W/2, cy: TRACK_H/2 };
 }
 
 function capsulePath(r) {
@@ -368,8 +381,7 @@ function capsulePath(r) {
 
 function roundRectPath(x, y, w, h, r) {
   ctx.beginPath();
-  ctx.moveTo(x+r, y);
-  ctx.lineTo(x+w-r, y);
+  ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y);
   ctx.arc(x+w-r, y+r, r, -Math.PI/2, Math.PI/2);
   ctx.lineTo(x+r, y+h);
   ctx.arc(x+r, y+r, r, Math.PI/2, -Math.PI/2);
@@ -377,10 +389,10 @@ function roundRectPath(x, y, w, h, r) {
 }
 
 function pointOnTrack(progress, lane, g) {
-  const DS = 6.5;
+  const DS = 7;
   const angle  = -(progress * Math.PI * 2) - Math.PI/2;
-  const outerA = g.outer.w/2 - DS,  outerB = g.outer.h/2 - DS;
-  const innerA = g.inner.w/2 + DS,  innerB = g.inner.h/2 + DS;
+  const outerA = g.outer.w/2 - DS, outerB = g.outer.h/2 - DS;
+  const innerA = g.inner.w/2 + DS, innerB = g.inner.h/2 + DS;
   const a = outerA - (outerA - innerA) * lane;
   const b = outerB - (outerB - innerB) * lane;
   return { x: g.cx + Math.cos(angle)*a, y: g.cy + Math.sin(angle)*b };
@@ -415,16 +427,16 @@ function retiredHalf(g) {
   return { x: f.x+hw+1, y: f.y, w: hw, h: f.h };
 }
 
-function infieldPos(index, frame) {
-  const DS = 11, step = DS + 3;
+function infieldPos(idx, frame) {
+  const DS = 13, step = DS + 4;
   const cols = Math.max(1, Math.floor((frame.w - 10) / step));
   return {
-    x: frame.x + 7 + (index % cols)*step + DS/2,
-    y: frame.y + 20 + Math.floor(index/cols)*step + DS/2,
+    x: frame.x + 8 + (idx % cols)*step + DS/2,
+    y: frame.y + 22 + Math.floor(idx/cols)*step + DS/2,
   };
 }
 
-function dist(x1, y1, x2, y2) { return Math.hypot(x2-x1, y2-y1); }
+function dist(x1,y1,x2,y2) { return Math.hypot(x2-x1, y2-y1); }
 
 // ─── Drawing ─────────────────────────────────────────────────────────────────
 function render() {
@@ -438,45 +450,31 @@ function render() {
   drawTrackDots(g);
 }
 
-function drawTrack(g) {
-  // Base fills
+function glowStroke(rect, color, blur, alpha, lineW) {
   ctx.save();
-  capsulePath(g.outer);
-  ctx.fillStyle = 'rgb(14, 11, 10)';
-  ctx.fill();
-  capsulePath(g.inner);
-  ctx.fillStyle = 'rgb(8, 7, 11)';
-  ctx.fill();
-  ctx.restore();
-
-  // Subtle mid-track center line
-  ctx.save();
-  ctx.shadowColor = 'rgba(255, 120, 0, 0.5)';
-  ctx.shadowBlur  = 10;
-  capsulePath(g.mid);
-  ctx.strokeStyle = 'rgba(255, 130, 10, 0.35)';
-  ctx.lineWidth = 1;
+  ctx.shadowColor = `rgba(220, 130, 10, ${alpha})`;
+  ctx.shadowBlur  = blur;
+  capsulePath(rect);
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = lineW || 1.5;
   ctx.stroke();
   ctx.restore();
+}
 
-  // Outer + inner glow edges — double-pass for richer glow
-  for (const rect of [g.outer, g.inner]) {
-    ctx.save();
-    ctx.shadowColor = 'rgba(255, 90, 0, 0.60)';
-    ctx.shadowBlur  = 18;
-    capsulePath(rect);
-    ctx.strokeStyle = 'rgba(255, 140, 15, 0.85)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.restore();
+function drawTrack(g) {
+  ctx.save();
+  capsulePath(g.outer);
+  ctx.fillStyle = '#0b0907';
+  ctx.fill();
+  capsulePath(g.inner);
+  ctx.fillStyle = '#070610';
+  ctx.fill();
+  ctx.restore();
 
-    ctx.save();
-    ctx.shadowColor = 'rgba(255, 60, 0, 0.25)';
-    ctx.shadowBlur  = 36;
-    capsulePath(rect);
-    ctx.strokeStyle = 'transparent';
-    ctx.stroke();
-    ctx.restore();
+  // 3 glowing rings: outer, ring2, inner — all same treatment
+  for (const ring of [g.outer, g.ring2, g.inner]) {
+    glowStroke(ring, 'rgba(230, 145, 20, 0.92)', 22, 0.75);
+    glowStroke(ring, 'rgba(255, 100, 0, 0.15)',  50, 0.30);
   }
 }
 
@@ -486,61 +484,62 @@ function drawStartFinish(g) {
   const cx = g.cx;
 
   ctx.save();
-  ctx.fillStyle = 'rgba(255,255,255,0.95)';
-  ctx.fillRect(cx - 7, topY, 3, h);
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.fillRect(cx - 8, topY, 3, h);
 
   const cellW = 4, rows = Math.max(4, Math.floor(h / cellW));
   const cellH = h / rows;
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < 2; col++) {
-      ctx.fillStyle = (row + col) % 2 === 0 ? 'rgba(255,255,255,0.95)' : 'rgba(0,0,0,0.95)';
-      ctx.fillRect(cx + 3 + col*cellW, topY + row*cellH, cellW, cellH);
+      ctx.fillStyle = (row+col) % 2 === 0 ? 'rgba(255,255,255,0.92)' : 'rgba(0,0,0,0.92)';
+      ctx.fillRect(cx + 2 + col*cellW, topY + row*cellH, cellW, cellH);
     }
   }
-  drawPill('S', cx - 20, midY);
-  drawPill('F', cx + 20, midY);
+
+  drawPill('S', cx - 22, midY);
+  drawPill('F', cx + 22, midY);
   ctx.restore();
 }
 
 function drawPill(label, cx, cy) {
-  ctx.font = '700 7px -apple-system, sans-serif';
+  ctx.font = '700 8px -apple-system, sans-serif';
   const tw = ctx.measureText(label).width;
-  const pw = tw + 8, ph = 14;
+  const pw = tw + 9, ph = 16;
   roundRectPath(cx - pw/2, cy - ph/2, pw, ph, ph/2);
-  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.fillStyle = 'rgba(240,235,220,0.92)';
   ctx.fill();
   ctx.fillStyle = '#111';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(label, cx, cy);
+  ctx.fillText(label, cx, cy + 0.5);
 }
 
 function drawInfieldLabels(g) {
   const f = g.infield;
   ctx.save();
-  ctx.font = '700 9px -apple-system, sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.font = '600 11px -apple-system, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.50)';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
-  ctx.fillText('BULLPEN', f.x + 8, f.y + 8);
-  ctx.fillStyle = 'rgba(255,255,255,0.12)';
-  ctx.fillRect(f.x + f.w/2, f.y + 6, 1, f.h - 12);
-  ctx.fillStyle = 'rgba(255,255,255,0.55)';
-  ctx.fillText('RETIRED', f.x + f.w/2 + 8, f.y + 8);
+  ctx.fillText('Bullpen', f.x + 8, f.y + 8);
+  ctx.fillStyle = 'rgba(255,255,255,0.14)';
+  ctx.fillRect(f.x + f.w/2, f.y + 8, 1, f.h - 16);
+  ctx.fillStyle = 'rgba(255,255,255,0.50)';
+  ctx.fillText('Retired', f.x + f.w/2 + 8, f.y + 8);
   ctx.restore();
 }
 
 function drawInfieldDots(g) {
   const bh = bullpenHalf(g), rh = retiredHalf(g);
-  projects.filter(p => p.lane === 'bullpen').slice(0, 8).forEach((p, i) => {
+  projects.filter(p => p.lane === 'bullpen').slice(0,8).forEach((p, i) => {
     const isDrag = drag && drag.id === p.id;
     const pos = isDrag ? drag : infieldPos(i, bh);
-    drawDot(pos.x, pos.y, 11, p.colorHex, isDrag, false);
+    drawDot(pos.x, pos.y, 14, p.colorHex, isDrag, false);
   });
-  projects.filter(p => p.lane === 'retired').slice(0, 8).forEach((p, i) => {
+  projects.filter(p => p.lane === 'retired').slice(0,8).forEach((p, i) => {
     const isDrag = drag && drag.id === p.id;
     const pos = isDrag ? drag : infieldPos(i, rh);
-    drawDot(pos.x, pos.y, 11, p.colorHex, isDrag, false);
+    drawDot(pos.x, pos.y, 14, p.colorHex, isDrag, false);
   });
 }
 
@@ -551,29 +550,27 @@ function drawTrackDots(g) {
     const lane = dotLanePos[p.id] !== undefined ? dotLanePos[p.id] : def;
     const isDrag = drag && drag.id === p.id;
     const pos = isDrag ? drag : pointOnTrack(p.progress, lane, g);
-    drawDot(pos.x, pos.y, 14, p.colorHex, isDrag, true);
+    drawDot(pos.x, pos.y, 18, p.colorHex, isDrag, true);
   });
 }
 
 function drawDot(x, y, diameter, hex, isDragging, outline) {
   const r = (diameter / 2) * (isDragging ? 1.4 : 1.0);
   ctx.save();
-  // Outer diffuse glow
+  // Diffuse outer glow
   ctx.shadowColor = hex;
-  ctx.shadowBlur  = isDragging ? 22 : (outline ? 14 : 10);
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI*2);
-  ctx.fillStyle = hex;
-  ctx.fill();
-  // Crisp outline
+  ctx.shadowBlur  = isDragging ? 28 : (outline ? 18 : 12);
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+  ctx.fillStyle = hex; ctx.fill();
+  // Outline
   ctx.shadowBlur = 0;
-  ctx.strokeStyle = outline ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.65)';
+  ctx.strokeStyle = outline ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.55)';
   ctx.lineWidth   = outline ? 2 : 1.5;
   ctx.stroke();
-  // Inner highlight
+  // Inner gloss highlight
   ctx.beginPath();
-  ctx.arc(x - r*0.2, y - r*0.25, r * 0.38, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(255,255,255,0.22)';
+  ctx.arc(x - r*0.22, y - r*0.28, r*0.35, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.28)';
   ctx.fill();
   ctx.restore();
 }
@@ -584,20 +581,18 @@ function findDotAt(px, py) {
   const racing  = projects.filter(p => p.lane === 'racing');
   const bullpen = projects.filter(p => p.lane === 'bullpen');
   const retired  = projects.filter(p => p.lane === 'retired');
-
   for (let i = 0; i < racing.length; i++) {
     const p = racing[i];
     const def  = racing.length <= 1 ? 0.5 : 0.2 + i/(racing.length-1)*0.6;
     const lane = dotLanePos[p.id] !== undefined ? dotLanePos[p.id] : def;
-    const pos  = pointOnTrack(p.progress, lane, g);
-    if (dist(px, py, pos.x, pos.y) < 18) return { project: p, type: 'track', lane };
+    if (dist(px, py, ...Object.values(pointOnTrack(p.progress, lane, g))) < 20) return { project: p, type: 'track', lane };
   }
   const bh = bullpenHalf(g), rh = retiredHalf(g);
   for (let i = 0; i < bullpen.length && i < 8; i++) {
-    if (dist(px, py, ...Object.values(infieldPos(i, bh))) < 14) return { project: bullpen[i], type: 'infield' };
+    if (dist(px, py, ...Object.values(infieldPos(i, bh))) < 16) return { project: bullpen[i], type: 'infield' };
   }
   for (let i = 0; i < retired.length && i < 8; i++) {
-    if (dist(px, py, ...Object.values(infieldPos(i, rh))) < 14) return { project: retired[i], type: 'infield' };
+    if (dist(px, py, ...Object.values(infieldPos(i, rh))) < 16) return { project: retired[i], type: 'infield' };
   }
   return null;
 }
@@ -611,20 +606,18 @@ function evPos(e) {
 
 canvas.addEventListener('mousedown',  onDragStart);
 canvas.addEventListener('touchstart', onDragStart, { passive: false });
-
 function onDragStart(e) {
   e.preventDefault();
   const { x, y } = evPos(e);
   const hit = findDotAt(x, y);
   if (!hit) return;
-  drag = { id: hit.project.id, type: hit.type, x, y, lane: hit.lane };
+  drag = { id: hit.project.id, type: hit.type, x, y };
   canvas.classList.add('dragging');
   render();
 }
 
 window.addEventListener('mousemove',  onDragMove);
 window.addEventListener('touchmove',  onDragMove, { passive: false });
-
 function onDragMove(e) {
   if (!drag) return;
   e.preventDefault();
@@ -634,10 +627,7 @@ function onDragMove(e) {
     const g = geo();
     if (!inInfield(x, y, g)) {
       const p = projects.find(p => p.id === drag.id);
-      if (p) {
-        p.progress = angleToProgress(x, y, g);
-        dotLanePos[drag.id] = laneValueFor(x, y, g);
-      }
+      if (p) { p.progress = angleToProgress(x, y, g); dotLanePos[drag.id] = laneValueFor(x, y, g); }
     }
   }
   render();
@@ -645,17 +635,14 @@ function onDragMove(e) {
 
 window.addEventListener('mouseup',  onDragEnd);
 window.addEventListener('touchend', onDragEnd);
-
 async function onDragEnd(e) {
   if (!drag) return;
   const { x, y } = evPos(e);
   const id = drag.id, type = drag.type;
   drag = null;
   canvas.classList.remove('dragging');
-
   const g = geo();
   const inside = inInfield(x, y, g);
-
   if (type === 'track') {
     if (inside) {
       await api.patch(id, { lane: x < g.infield.x + g.infield.w/2 ? 'bullpen' : 'retired' });
@@ -674,82 +661,88 @@ async function onDragEnd(e) {
   await refresh();
 }
 
-// ─── Cards ───────────────────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
 function hexToRgba(hex, a) {
   const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
   return `rgba(${r},${g},${b},${a})`;
 }
+function laneBtnActiveStyle(lane) {
+  const s = {
+    bullpen: 'background:rgba(150,35,35,0.55);border-color:rgba(200,65,65,0.70);color:rgb(255,120,110);',
+    racing:  'background:rgba(25,110,50,0.50);border-color:rgba(55,165,80,0.68);color:rgb(85,215,115);',
+    retired: 'background:rgba(130,88,8,0.55);border-color:rgba(195,140,25,0.72);color:rgb(250,185,55);',
+  };
+  return s[lane] || '';
+}
 
+// ─── Cards ───────────────────────────────────────────────────────────────────
 function renderCards() {
   const racing  = projects.filter(p => p.lane === 'racing');
   const bullpen = projects.filter(p => p.lane === 'bullpen');
   const retired  = projects.filter(p => p.lane === 'retired');
 
-  // Racers — color-tinted rows with progress bars
+  // Racers
   document.getElementById('racersList').innerHTML = racing.length === 0
     ? '<div class="empty-label">No projects racing</div>'
     : racing.map(p => `
-        <div class="racer-row" style="
-          border-left-color: ${p.colorHex};
-          background: linear-gradient(90deg, ${hexToRgba(p.colorHex, 0.10)} 0%, ${hexToRgba(p.colorHex, 0.03)} 60%, transparent 100%);
-        ">
-          <div class="dot-circle" style="width:12px;height:12px;background:${p.colorHex};box-shadow:0 0 10px ${hexToRgba(p.colorHex,0.7)}"></div>
-          <div class="racer-info">
-            <div class="racer-header">
+        <div class="racer-row">
+          <div class="racer-dot" style="width:18px;height:18px;background:${p.colorHex};box-shadow:0 0 14px ${hexToRgba(p.colorHex,0.8)};border-radius:50%"></div>
+          <div class="racer-body">
+            <div class="racer-top">
               <span class="racer-name">${esc(p.name)}</span>
               <span class="racer-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>
+              <span class="racer-chevron">›</span>
             </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${hexToRgba(p.colorHex,0.6)})"></div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${Math.round(p.progress*100)}%;background:${p.colorHex}"></div>
             </div>
           </div>
         </div>`).join('');
 
-  // Side cards — glowing dots
+  // Bullpen
   document.getElementById('bullpenList').innerHTML = bullpen.length === 0
-    ? '<span style="color:rgba(255,255,255,0.25);font-size:13px">Empty</span>'
+    ? '<div style="color:rgba(255,255,255,0.22);font-size:13px;padding:8px 14px 12px">Empty</div>'
     : bullpen.map(p => `
-        <div class="side-row">
-          <div class="dot-circle" style="width:9px;height:9px;background:${p.colorHex};box-shadow:0 0 8px ${hexToRgba(p.colorHex,0.7)};flex-shrink:0"></div>
+        <div class="side-item">
+          <div class="side-dot" style="width:10px;height:10px;background:${p.colorHex};box-shadow:0 0 8px ${hexToRgba(p.colorHex,0.7)}"></div>
           <span class="side-name">${esc(p.name)}</span>
+          <span class="side-chev">›</span>
         </div>`).join('');
 
+  // Retired
   document.getElementById('retiredList').innerHTML = retired.length === 0
-    ? '<span style="color:rgba(255,255,255,0.25);font-size:13px">Empty</span>'
+    ? '<div style="color:rgba(255,255,255,0.22);font-size:13px;padding:8px 14px 12px">Empty</div>'
     : retired.map(p => `
-        <div class="side-row">
-          <div class="dot-circle" style="width:9px;height:9px;background:${p.colorHex};box-shadow:0 0 8px ${hexToRgba(p.colorHex,0.7)};flex-shrink:0;opacity:0.55"></div>
+        <div class="side-item">
+          <div class="side-dot" style="width:10px;height:10px;background:${p.colorHex};opacity:0.55;box-shadow:0 0 6px ${hexToRgba(p.colorHex,0.5)}"></div>
           <span class="side-name" style="opacity:0.6">${esc(p.name)}</span>
+          <span class="side-chev">›</span>
         </div>`).join('');
 
   // Manage
   const ml = document.getElementById('manageList');
   ml.innerHTML = projects.map(p => `
     <div class="project-row">
-      <div class="row-main">
-        <div class="dot-circle" style="width:13px;height:13px;background:${p.colorHex};box-shadow:0 0 10px ${hexToRgba(p.colorHex,0.6)};flex-shrink:0"></div>
-        <input class="name-input" value="${esc(p.name)}" data-id="${p.id}">
-        ${p.lane === 'racing'
-          ? `<span class="row-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>`
-          : '<span class="row-pct"></span>'}
-        <button class="delete-btn" data-id="${p.id}" title="Delete">✕</button>
+      <div class="row-top">
+        <div class="manage-dot" style="width:16px;height:16px;flex-shrink:0;background:${p.colorHex};box-shadow:0 0 12px ${hexToRgba(p.colorHex,0.7)}"></div>
+        <input class="name-input" value="${esc(p.name)}" data-id="${p.id}" spellcheck="false">
+        <button class="delete-btn" data-id="${p.id}">×</button>
       </div>
       <div class="lane-selector">
-        ${['bullpen','racing','retired'].map(l =>
-          `<button class="lane-btn${p.lane===l?' active':''}" data-id="${p.id}" data-lane="${l}">${l.charAt(0).toUpperCase()+l.slice(1)}</button>`
-        ).join('')}
+        ${['bullpen','racing','retired'].map(l => `
+          <button class="lane-btn${p.lane===l?' active':''}" data-id="${p.id}" data-lane="${l}"
+            style="${p.lane===l ? laneBtnActiveStyle(l) : ''}">${l.charAt(0).toUpperCase()+l.slice(1)}</button>
+        `).join('')}
       </div>
       ${p.lane === 'racing' ? `
-      <div class="progress-row">
-        <span class="progress-label">Progress</span>
-        <input type="range" class="progress-slider" min="0" max="100"
-               value="${Math.round(p.progress*100)}" data-id="${p.id}"
-               style="accent-color:${p.colorHex}">
-        <span class="progress-val" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>
+      <div class="prog-row">
+        <span class="prog-label">PROGRESS</span>
+        <input type="range" class="prog-slider" min="0" max="100" value="${Math.round(p.progress*100)}"
+               data-id="${p.id}" style="accent-color:${p.colorHex}">
+        <span class="prog-val" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>
       </div>` : ''}
     </div>`).join('');
 
@@ -763,13 +756,11 @@ function renderCards() {
   ml.querySelectorAll('.lane-btn').forEach(btn =>
     btn.addEventListener('click', async () => { await api.patch(btn.dataset.id, { lane: btn.dataset.lane }); await refresh(); })
   );
-  ml.querySelectorAll('.progress-slider').forEach(slider => {
+  ml.querySelectorAll('.prog-slider').forEach(slider => {
     slider.addEventListener('input', () => {
       const pct = parseInt(slider.value);
       const row = slider.closest('.project-row');
-      row.querySelector('.progress-val').textContent = pct + '%';
-      const pctEl = row.querySelector('.row-pct');
-      if (pctEl) pctEl.textContent = pct + '%';
+      row.querySelector('.prog-val').textContent = pct + '%';
       const p = projects.find(p => p.id === slider.dataset.id);
       if (p) { p.progress = pct/100; render(); }
     });

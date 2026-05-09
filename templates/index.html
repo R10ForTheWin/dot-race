@@ -165,7 +165,7 @@
     .racer-name { font-size: 19px; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.2px; }
     .racer-pct  { font-size: 18px; font-weight: 700; flex-shrink: 0; }
     .racer-chev { color: rgba(255,255,255,0.22); font-size: 17px; flex-shrink: 0; }
-    .prog-bar-bg   { height: 4px; background: rgba(255,255,255,0.10); border-radius: 3px; overflow: hidden; }
+    .prog-bar-bg   { height: 5px; background: rgba(255,255,255,0.10); border-radius: 3px; overflow: hidden; margin-top: 2px; }
     .prog-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
     .empty-label { font-size: 14px; color: rgba(255,255,255,0.22); padding: 4px 0 6px; }
 
@@ -495,40 +495,43 @@ function render() {
   drawTrackDots(g);
 }
 
-function drawRing(rect, innerBlur, outerBlur) {
-  // Tight bright stroke
-  ctx.save();
-  ctx.shadowColor = 'rgba(230, 150, 15, 0.90)';
-  ctx.shadowBlur  = innerBlur;
-  capsulePath(rect);
-  ctx.strokeStyle = 'rgba(240, 160, 20, 0.95)';
-  ctx.lineWidth   = 1.8;
-  ctx.stroke();
-  ctx.restore();
-  // Wide diffuse glow
-  ctx.save();
-  ctx.shadowColor = 'rgba(200, 100, 5, 0.35)';
-  ctx.shadowBlur  = outerBlur;
-  capsulePath(rect);
-  ctx.strokeStyle = 'rgba(220, 130, 10, 0.20)';
-  ctx.lineWidth   = 1;
-  ctx.stroke();
-  ctx.restore();
+// Stacked-stroke neon: no shadowBlur — works perfectly at any DPR
+const NEON_PASSES = [
+  { w: 48,  c: 'rgba(150, 55, 0, 0.030)' },
+  { w: 30,  c: 'rgba(190, 80, 4, 0.065)' },
+  { w: 17,  c: 'rgba(225, 108, 7, 0.150)' },
+  { w: 8,   c: 'rgba(248, 138, 11, 0.360)' },
+  { w: 3,   c: 'rgba(255, 168, 20, 0.800)' },
+  { w: 1.4, c: 'rgba(255, 222, 80, 1.000)' },
+];
+
+function drawNeonRing(rect) {
+  for (const { w, c } of NEON_PASSES) {
+    ctx.save();
+    capsulePath(rect);
+    ctx.strokeStyle = c;
+    ctx.lineWidth   = w;
+    ctx.stroke();
+    ctx.restore();
+  }
 }
 
 function drawTrack(g) {
+  // Base fills
   ctx.save();
-  capsulePath(g.outer);
-  ctx.fillStyle = '#0b0907';
-  ctx.fill();
-  capsulePath(g.inner);
-  ctx.fillStyle = '#060508';
-  ctx.fill();
+  capsulePath(g.outer); ctx.fillStyle = '#0c0907'; ctx.fill();
+  capsulePath(g.inner); ctx.fillStyle = '#060407'; ctx.fill();
   ctx.restore();
 
-  drawRing(g.outer, 20, 52);
-  drawRing(g.ring2, 18, 44);
-  drawRing(g.inner, 20, 52);
+  // 3 glowing rings
+  drawNeonRing(g.outer);
+  drawNeonRing(g.ring2);
+  drawNeonRing(g.inner);
+
+  // Re-fill infield to cover glow bleed from inner ring
+  ctx.save();
+  capsulePath(g.inner); ctx.fillStyle = '#060407'; ctx.fill();
+  ctx.restore();
 }
 
 function drawStartFinish(g) {
@@ -604,7 +607,7 @@ function drawDot(x, y, diameter, hex, isDragging, outline) {
   const r=(diameter/2)*(isDragging?1.4:1.0);
   ctx.save();
   ctx.shadowColor=hex;
-  ctx.shadowBlur=isDragging?28:(outline?20:12);
+  ctx.shadowBlur=(isDragging?28:(outline?20:12)) * DPR;
   ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
   ctx.fillStyle=hex; ctx.fill();
   ctx.shadowBlur=0;

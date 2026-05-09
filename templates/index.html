@@ -87,20 +87,21 @@
       color: #c8973a; font-style: italic;
     }
 
+    .title-glow-wrap {
+      display: inline-block;
+      filter:
+        drop-shadow(0 0 18px rgba(255, 155, 10, 0.85))
+        drop-shadow(0 0 45px rgba(255, 95,  0,  0.45))
+        drop-shadow(0 0 90px rgba(255, 70,  0,  0.20));
+    }
     .title-dot-race {
       font-family: 'Bebas Neue', Impact, 'Arial Black', sans-serif;
       font-size: 80px; font-weight: 400;
       font-style: italic;
       letter-spacing: 0.04em;
       line-height: 0.88;
-      color: #f5d055;
-      text-shadow:
-        0 0 6px  rgba(255, 230, 80,  0.95),
-        0 0 16px rgba(255, 185, 20,  0.85),
-        0 0 35px rgba(255, 140, 10,  0.65),
-        0 0 70px rgba(255, 100, 0,   0.40),
-        0 0 110px rgba(255, 65, 0,   0.18),
-        0  2px 5px rgba(0, 0, 0, 0.95);
+      color: #f8dc50;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95);
     }
 
     .app-subtitle {
@@ -339,7 +340,7 @@
         <span class="title-project-text">PROJECT</span>
         <div class="title-line r"></div>
       </div>
-      <div class="title-dot-race">DOT RACE</div>
+      <div class="title-glow-wrap"><div class="title-dot-race">DOT RACE</div></div>
       <p class="app-subtitle">TRACK PROGRESS. DRIVE RESULTS.</p>
     </div>
     <button class="add-btn" id="addBtn">+</button>
@@ -569,24 +570,6 @@ function drawInfieldLabels(g) {
   ctx.restore();
 }
 
-// Comet trail: draws N fading dots behind each racing dot
-function drawCometTrail(progress, lane, hex, g) {
-  const steps = 5;
-  for (let i = steps; i >= 1; i--) {
-    const tp = Math.max(0, progress - i * 0.013);
-    const pos = pointOnTrack(tp, lane, g);
-    const alpha = ((steps - i + 1) / (steps + 2)) * 0.60;
-    const r = ((steps - i + 1) / steps) * 5;
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.shadowColor = hex;
-    ctx.shadowBlur = 6 * DPR;
-    ctx.beginPath(); ctx.arc(pos.x, pos.y, r, 0, Math.PI*2);
-    ctx.fillStyle = hex; ctx.fill();
-    ctx.restore();
-  }
-}
-
 function drawInfieldDots(g) {
   const bh=bullpenHalf(g), rh=retiredHalf(g);
   projects.filter(p=>p.lane==='bullpen').slice(0,8).forEach((p,i)=>{
@@ -608,8 +591,6 @@ function drawTrackDots(g) {
     const lane=dotLanePos[p.id]!==undefined?dotLanePos[p.id]:def;
     const isDrag=drag&&drag.id===p.id;
     const pos=isDrag?drag:pointOnTrack(p.progress,lane,g);
-    // Comet trail (only when not dragging)
-    if (!isDrag) drawCometTrail(p.progress, lane, p.colorHex, g);
     drawDot(pos.x,pos.y,20,p.colorHex,isDrag,true);
   });
 }

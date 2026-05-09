@@ -7,193 +7,260 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
+    html {
       min-height: 100%;
-      background: linear-gradient(135deg, rgb(28, 26, 38) 0%, rgb(8, 8, 13) 100%);
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 100, 0, 0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(120, 60, 200, 0.05) 0%, transparent 70%),
+        linear-gradient(160deg, #0e0c17 0%, #060509 100%);
       background-attachment: fixed;
+    }
+    body {
+      min-height: 100%;
       color: white;
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Segoe UI', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
 
     #app {
       max-width: 480px;
       margin: 0 auto;
-      padding: 56px 16px 40px;
+      padding: 52px 16px 48px;
     }
 
     /* ── Header ── */
     .header-bar {
       display: flex;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 18px;
       padding: 0 4px;
     }
     .app-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: rgb(255, 217, 140);
-      flex: 1;
-      letter-spacing: -0.3px;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      background: linear-gradient(135deg, #ffe08a 0%, #ffb347 60%, #ff8c00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 18px rgba(255, 160, 40, 0.35));
     }
     .add-btn {
-      width: 32px; height: 32px;
+      width: 34px; height: 34px;
       border-radius: 50%;
-      background: rgba(255, 128, 10, 0.18);
-      border: none;
+      background: rgba(255, 128, 10, 0.15);
+      border: 1px solid rgba(255, 128, 10, 0.30);
       cursor: pointer;
-      color: rgb(255, 191, 77);
-      font-size: 20px;
+      color: rgb(255, 180, 60);
+      font-size: 22px;
       font-weight: 300;
       line-height: 1;
       display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s;
+      transition: all 0.2s;
+      box-shadow: 0 0 12px rgba(255, 128, 10, 0.15);
     }
-    .add-btn:hover { background: rgba(255, 128, 10, 0.30); }
+    .add-btn:hover {
+      background: rgba(255, 128, 10, 0.28);
+      box-shadow: 0 0 20px rgba(255, 128, 10, 0.30);
+      transform: scale(1.05);
+    }
 
     /* ── Cards ── */
     .card {
-      background: rgba(255, 204, 128, 0.05);
-      border: 1px solid rgba(255, 128, 10, 0.22);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 128, 10, 0.20);
       border-radius: 24px;
       margin-bottom: 14px;
       overflow: hidden;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.45),
+        0 1px 0 rgba(255, 255, 255, 0.05) inset,
+        0 0 0 1px rgba(255, 128, 10, 0.08) inset;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
     .card-title {
-      font-size: 15px;
+      font-size: 11px;
       font-weight: 700;
-      color: rgba(255, 184, 72, 0.85);
-      padding: 16px 16px 0;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 184, 72, 0.6);
+      padding: 18px 18px 0;
     }
 
     /* ── Track canvas ── */
-    #trackCard { padding: 0; }
+    #trackCard {
+      padding: 0;
+      border-color: rgba(255, 128, 10, 0.30);
+      box-shadow:
+        0 0 40px rgba(255, 100, 0, 0.12),
+        0 8px 40px rgba(0, 0, 0, 0.6),
+        0 1px 0 rgba(255, 255, 255, 0.05) inset;
+      animation: trackCardPulse 4s ease-in-out infinite;
+    }
+    @keyframes trackCardPulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(255, 100, 0, 0.10), 0 8px 40px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.05) inset; }
+      50%       { box-shadow: 0 0 55px rgba(255, 100, 0, 0.22), 0 8px 40px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.05) inset; }
+    }
     #trackCanvas {
       display: block;
       width: 100%;
       touch-action: none;
       cursor: grab;
+      border-radius: 24px;
     }
     #trackCanvas.dragging { cursor: grabbing; }
 
     /* ── Racers card ── */
-    #racersList { padding: 10px 0 10px; }
+    #racersList { padding: 12px 0 14px; }
     .racer-row {
       display: flex; align-items: center; gap: 12px;
-      padding: 10px 16px;
-      margin: 0 10px 4px;
-      background: rgba(255, 204, 128, 0.05);
+      padding: 12px 16px;
+      margin: 0 10px 6px;
       border-radius: 14px;
+      border-left: 3px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .racer-row::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 14px;
+      opacity: 0.08;
+      pointer-events: none;
     }
     .dot-circle { border-radius: 50%; flex-shrink: 0; }
-    .racer-name { flex: 1; font-size: 16px; font-weight: 600; }
-    .racer-pct  { font-size: 15px; font-weight: 700; }
-    .empty-label { font-size: 15px; color: rgba(255,255,255,0.35); padding: 0 16px 16px; }
+    .racer-info { flex: 1; min-width: 0; }
+    .racer-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+    .racer-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+    .racer-pct  { font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .progress-bar-bg {
+      height: 3px; background: rgba(255,255,255,0.10); border-radius: 2px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 2px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .empty-label { font-size: 14px; color: rgba(255,255,255,0.25); padding: 4px 18px 6px; }
 
     /* ── Side cards ── */
     .side-cards { display: flex; gap: 12px; margin-bottom: 14px; }
     .side-cards .card { flex: 1; margin-bottom: 0; }
-    .side-body { padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
-    .side-row { display: flex; align-items: center; gap: 8px; }
+    .side-body { padding: 10px 14px 16px; display: flex; flex-direction: column; gap: 7px; }
+    .side-row { display: flex; align-items: center; gap: 9px; }
     .side-name {
-      font-size: 14px; font-weight: 600;
-      color: rgba(255,255,255,0.85);
+      font-size: 13px; font-weight: 500;
+      color: rgba(255,255,255,0.75);
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
     /* ── Manage card ── */
-    #manageList { padding: 10px 0; }
+    #manageList { padding: 10px 0 4px; }
     .project-row {
       padding: 14px;
       margin: 0 10px 8px;
-      background: rgba(255, 204, 128, 0.05);
-      border: 1px solid rgba(255, 128, 10, 0.18);
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 128, 10, 0.14);
       border-radius: 16px;
+      transition: border-color 0.2s;
     }
+    .project-row:hover { border-color: rgba(255, 128, 10, 0.28); }
     .row-main { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .name-input {
       flex: 1;
-      background: rgba(255,255,255,0.07);
-      border: none; border-radius: 8px;
-      color: white; font-size: 16px; font-weight: 600;
-      padding: 4px 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      color: white; font-size: 15px; font-weight: 600;
+      padding: 5px 9px;
       font-family: inherit;
+      transition: all 0.15s;
     }
-    .name-input:focus { outline: none; background: rgba(255,255,255,0.12); }
-    .row-pct { font-size: 14px; font-weight: 700; min-width: 34px; text-align: right; }
+    .name-input:focus { outline: none; background: rgba(255,255,255,0.11); border-color: rgba(255, 128, 10, 0.45); }
+    .row-pct { font-size: 13px; font-weight: 700; min-width: 34px; text-align: right; }
     .delete-btn {
       background: none; border: none; cursor: pointer;
-      color: rgba(255, 80, 80, 0.65); font-size: 14px; padding: 4px 2px;
+      color: rgba(255, 80, 80, 0.50); font-size: 13px; padding: 4px 2px;
       line-height: 1; transition: color 0.15s;
     }
-    .delete-btn:hover { color: rgba(255, 80, 80, 1); }
+    .delete-btn:hover { color: rgba(255, 80, 80, 0.90); }
 
     /* Lane segmented control */
-    .lane-selector { display: flex; gap: 6px; }
+    .lane-selector { display: flex; gap: 5px; }
     .lane-btn {
       flex: 1; padding: 6px 4px;
       border-radius: 8px;
-      border: 1px solid rgba(255, 128, 10, 0.25);
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.5);
-      font-size: 12px; font-weight: 600; font-family: inherit;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.38);
+      font-size: 11px; font-weight: 700; font-family: inherit;
+      letter-spacing: 0.02em;
       cursor: pointer; transition: all 0.15s;
     }
-    .lane-btn:hover { background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.8); }
+    .lane-btn:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.75); }
     .lane-btn.active {
-      background: rgba(255, 128, 10, 0.25);
-      border-color: rgba(255, 128, 10, 0.6);
+      background: rgba(255, 128, 10, 0.20);
+      border-color: rgba(255, 128, 10, 0.50);
       color: rgb(255, 184, 72);
+      box-shadow: 0 0 10px rgba(255, 128, 10, 0.15);
     }
 
     /* Progress row */
     .progress-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-    .progress-label { font-size: 13px; font-weight: 600; color: rgba(255, 184, 72, 0.75); white-space: nowrap; }
-    .progress-slider { flex: 1; height: 4px; cursor: pointer; }
-    .progress-val { font-size: 13px; font-weight: 700; min-width: 30px; text-align: right; }
+    .progress-label { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255, 184, 72, 0.55); white-space: nowrap; }
+    .progress-slider { flex: 1; cursor: pointer; }
+    .progress-val { font-size: 12px; font-weight: 700; min-width: 30px; text-align: right; }
 
     /* ── Add modal ── */
     .modal-overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.65);
+      background: rgba(0,0,0,0.70);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       display: flex; align-items: center; justify-content: center;
       z-index: 100;
       opacity: 0; pointer-events: none;
-      transition: opacity 0.18s;
+      transition: opacity 0.20s;
     }
     .modal-overlay.visible { opacity: 1; pointer-events: all; }
     .modal {
-      background: rgb(26, 22, 36);
-      border: 1px solid rgba(255, 128, 10, 0.35);
-      border-radius: 20px; padding: 24px;
+      background: rgba(22, 18, 32, 0.95);
+      border: 1px solid rgba(255, 128, 10, 0.30);
+      border-radius: 22px; padding: 26px;
       width: min(320px, 88vw);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset;
     }
-    .modal-title { font-size: 17px; font-weight: 700; color: rgb(255, 217, 140); margin-bottom: 16px; }
+    .modal-title { font-size: 18px; font-weight: 700; color: rgb(255, 217, 140); margin-bottom: 16px; letter-spacing: -0.3px; }
     .modal-input {
       width: 100%;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 10px; color: white;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 11px; color: white;
       font-size: 16px; font-family: inherit;
-      padding: 10px 12px; margin-bottom: 16px;
+      padding: 11px 13px; margin-bottom: 18px;
+      transition: border-color 0.15s;
     }
-    .modal-input:focus { outline: none; border-color: rgba(255, 128, 10, 0.6); }
+    .modal-input:focus { outline: none; border-color: rgba(255, 128, 10, 0.55); }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
     .modal-cancel {
-      background: none;
-      border: 1px solid rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.6);
-      border-radius: 10px; padding: 8px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.55);
+      border-radius: 11px; padding: 9px 18px;
       font-size: 15px; font-family: inherit; cursor: pointer;
+      transition: all 0.15s;
     }
+    .modal-cancel:hover { background: rgba(255,255,255,0.09); }
     .modal-add {
-      background: rgba(255, 128, 10, 0.25);
-      border: 1px solid rgba(255, 128, 10, 0.5);
-      color: rgb(255, 184, 72);
-      border-radius: 10px; padding: 8px 18px;
-      font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer;
-      transition: background 0.15s;
+      background: linear-gradient(135deg, rgba(255, 140, 20, 0.35), rgba(255, 80, 0, 0.25));
+      border: 1px solid rgba(255, 128, 10, 0.50);
+      color: rgb(255, 200, 80);
+      border-radius: 11px; padding: 9px 20px;
+      font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer;
+      box-shadow: 0 0 16px rgba(255, 128, 10, 0.20);
+      transition: all 0.15s;
     }
-    .modal-add:hover { background: rgba(255, 128, 10, 0.40); }
+    .modal-add:hover { box-shadow: 0 0 24px rgba(255, 128, 10, 0.35); transform: translateY(-1px); }
   </style>
 </head>
 <body>
@@ -233,7 +300,7 @@
 <div class="modal-overlay" id="addModal">
   <div class="modal">
     <div class="modal-title">New Project</div>
-    <input class="modal-input" id="newProjectName" type="text" placeholder="Name" autocomplete="off" autocorrect="off">
+    <input class="modal-input" id="newProjectName" type="text" placeholder="Project name" autocomplete="off" autocorrect="off">
     <div class="modal-actions">
       <button class="modal-cancel" id="cancelAdd">Cancel</button>
       <button class="modal-add" id="confirmAdd">Add</button>
@@ -244,8 +311,8 @@
 <script>
 // ─── State ──────────────────────────────────────────────────────────────────
 let projects = [];
-let dotLanePos = {};   // { id: 0..1 } lateral position on track
-let drag = null;       // { id, type:'track'|'infield', x, y }
+let dotLanePos = {};
+let drag = null;
 
 // ─── API ────────────────────────────────────────────────────────────────────
 const api = {
@@ -258,7 +325,7 @@ const api = {
 // ─── Canvas setup ────────────────────────────────────────────────────────────
 const canvas = document.getElementById('trackCanvas');
 const ctx    = canvas.getContext('2d');
-const TRACK_H = 220;
+const TRACK_H = 230;
 const DPR     = window.devicePixelRatio || 1;
 let W = 0;
 
@@ -279,10 +346,10 @@ function geo() {
   const M  = 10;
   const ox = M, oy = M, ow = W - 2*M, oh = TRACK_H - 2*M;
   return {
-    outer:   { x: ox,      y: oy,      w: ow,      h: oh      },
-    inner:   { x: ox+28,   y: oy+28,   w: ow-56,   h: oh-56   },
-    mid:     { x: ox+14,   y: oy+14,   w: ow-28,   h: oh-28   },
-    infield: { x: ox+54,   y: oy+42,   w: ow-108,  h: oh-84   },
+    outer:   { x: ox,    y: oy,    w: ow,     h: oh     },
+    inner:   { x: ox+28, y: oy+28, w: ow-56,  h: oh-56  },
+    mid:     { x: ox+14, y: oy+14, w: ow-28,  h: oh-28  },
+    infield: { x: ox+54, y: oy+42, w: ow-108, h: oh-84  },
     cx: ox + ow/2,
     cy: oy + oh/2,
   };
@@ -372,51 +439,56 @@ function render() {
 }
 
 function drawTrack(g) {
+  // Base fills
   ctx.save();
   capsulePath(g.outer);
-  ctx.fillStyle = 'rgb(18, 15, 13)';
+  ctx.fillStyle = 'rgb(14, 11, 10)';
   ctx.fill();
   capsulePath(g.inner);
-  ctx.fillStyle = 'rgb(10, 10, 13)';
+  ctx.fillStyle = 'rgb(8, 7, 11)';
   ctx.fill();
   ctx.restore();
 
-  // Mid glow line
+  // Subtle mid-track center line
   ctx.save();
-  ctx.shadowColor = 'rgba(255, 102, 0, 0.6)';
-  ctx.shadowBlur  = 8;
+  ctx.shadowColor = 'rgba(255, 120, 0, 0.5)';
+  ctx.shadowBlur  = 10;
   capsulePath(g.mid);
-  ctx.strokeStyle = 'rgba(255, 122, 8, 0.45)';
+  ctx.strokeStyle = 'rgba(255, 130, 10, 0.35)';
   ctx.lineWidth = 1;
   ctx.stroke();
   ctx.restore();
 
-  // Outer + inner edge glow
+  // Outer + inner glow edges — double-pass for richer glow
   for (const rect of [g.outer, g.inner]) {
     ctx.save();
-    ctx.shadowColor = 'rgba(255, 102, 0, 0.9)';
-    ctx.shadowBlur  = 10;
+    ctx.shadowColor = 'rgba(255, 90, 0, 0.60)';
+    ctx.shadowBlur  = 18;
     capsulePath(rect);
-    ctx.strokeStyle = 'rgb(255, 128, 10)';
+    ctx.strokeStyle = 'rgba(255, 140, 15, 0.85)';
     ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.save();
+    ctx.shadowColor = 'rgba(255, 60, 0, 0.25)';
+    ctx.shadowBlur  = 36;
+    capsulePath(rect);
+    ctx.strokeStyle = 'transparent';
     ctx.stroke();
     ctx.restore();
   }
 }
 
 function drawStartFinish(g) {
-  const topY    = g.outer.y;
-  const innerTopY = g.inner.y;
-  const h = innerTopY - topY;
-  const midY = (topY + innerTopY) / 2;
+  const topY = g.outer.y, innerTopY = g.inner.y;
+  const h = innerTopY - topY, midY = (topY + innerTopY) / 2;
   const cx = g.cx;
 
   ctx.save();
-  // Solid white bar
   ctx.fillStyle = 'rgba(255,255,255,0.95)';
   ctx.fillRect(cx - 7, topY, 3, h);
 
-  // Checkerboard bar
   const cellW = 4, rows = Math.max(4, Math.floor(h / cellW));
   const cellH = h / rows;
   for (let row = 0; row < rows; row++) {
@@ -425,8 +497,6 @@ function drawStartFinish(g) {
       ctx.fillRect(cx + 3 + col*cellW, topY + row*cellH, cellW, cellH);
     }
   }
-
-  // S / F pills
   drawPill('S', cx - 20, midY);
   drawPill('F', cx + 20, midY);
   ctx.restore();
@@ -437,9 +507,9 @@ function drawPill(label, cx, cy) {
   const tw = ctx.measureText(label).width;
   const pw = tw + 8, ph = 14;
   roundRectPath(cx - pw/2, cy - ph/2, pw, ph, ph/2);
-  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
   ctx.fill();
-  ctx.fillStyle = 'black';
+  ctx.fillStyle = '#111';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(label, cx, cy);
@@ -448,30 +518,26 @@ function drawPill(label, cx, cy) {
 function drawInfieldLabels(g) {
   const f = g.infield;
   ctx.save();
-  ctx.font = '700 10px -apple-system, sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,0.75)';
+  ctx.font = '700 9px -apple-system, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
-  ctx.fillText('Bullpen', f.x + 8, f.y + 8);
-  ctx.fillStyle = 'rgba(0,0,0,0.4)';
-  ctx.fillRect(f.x + f.w/2, f.y, 1, f.h);
-  ctx.fillStyle = 'rgba(255,255,255,0.75)';
-  ctx.fillText('Retired', f.x + f.w/2 + 8, f.y + 8);
+  ctx.fillText('BULLPEN', f.x + 8, f.y + 8);
+  ctx.fillStyle = 'rgba(255,255,255,0.12)';
+  ctx.fillRect(f.x + f.w/2, f.y + 6, 1, f.h - 12);
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.fillText('RETIRED', f.x + f.w/2 + 8, f.y + 8);
   ctx.restore();
 }
 
 function drawInfieldDots(g) {
-  const bh = bullpenHalf(g);
-  const rh = retiredHalf(g);
-  const bullpen = projects.filter(p => p.lane === 'bullpen');
-  const retired  = projects.filter(p => p.lane === 'retired');
-
-  bullpen.slice(0, 8).forEach((p, i) => {
+  const bh = bullpenHalf(g), rh = retiredHalf(g);
+  projects.filter(p => p.lane === 'bullpen').slice(0, 8).forEach((p, i) => {
     const isDrag = drag && drag.id === p.id;
     const pos = isDrag ? drag : infieldPos(i, bh);
     drawDot(pos.x, pos.y, 11, p.colorHex, isDrag, false);
   });
-  retired.slice(0, 8).forEach((p, i) => {
+  projects.filter(p => p.lane === 'retired').slice(0, 8).forEach((p, i) => {
     const isDrag = drag && drag.id === p.id;
     const pos = isDrag ? drag : infieldPos(i, rh);
     drawDot(pos.x, pos.y, 11, p.colorHex, isDrag, false);
@@ -485,23 +551,30 @@ function drawTrackDots(g) {
     const lane = dotLanePos[p.id] !== undefined ? dotLanePos[p.id] : def;
     const isDrag = drag && drag.id === p.id;
     const pos = isDrag ? drag : pointOnTrack(p.progress, lane, g);
-    drawDot(pos.x, pos.y, 13, p.colorHex, isDrag, true);
+    drawDot(pos.x, pos.y, 14, p.colorHex, isDrag, true);
   });
 }
 
 function drawDot(x, y, diameter, hex, isDragging, outline) {
-  const r = (diameter / 2) * (isDragging ? 1.35 : 1.0);
+  const r = (diameter / 2) * (isDragging ? 1.4 : 1.0);
   ctx.save();
+  // Outer diffuse glow
   ctx.shadowColor = hex;
-  ctx.shadowBlur  = isDragging ? 12 : 6;
+  ctx.shadowBlur  = isDragging ? 22 : (outline ? 14 : 10);
   ctx.beginPath();
   ctx.arc(x, y, r, 0, Math.PI*2);
   ctx.fillStyle = hex;
   ctx.fill();
-  ctx.shadowBlur  = 0;
-  ctx.strokeStyle = outline ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.75)';
+  // Crisp outline
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = outline ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.65)';
   ctx.lineWidth   = outline ? 2 : 1.5;
   ctx.stroke();
+  // Inner highlight
+  ctx.beginPath();
+  ctx.arc(x - r*0.2, y - r*0.25, r * 0.38, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.22)';
+  ctx.fill();
   ctx.restore();
 }
 
@@ -517,16 +590,14 @@ function findDotAt(px, py) {
     const def  = racing.length <= 1 ? 0.5 : 0.2 + i/(racing.length-1)*0.6;
     const lane = dotLanePos[p.id] !== undefined ? dotLanePos[p.id] : def;
     const pos  = pointOnTrack(p.progress, lane, g);
-    if (dist(px, py, pos.x, pos.y) < 16) return { project: p, type: 'track', lane };
+    if (dist(px, py, pos.x, pos.y) < 18) return { project: p, type: 'track', lane };
   }
   const bh = bullpenHalf(g), rh = retiredHalf(g);
   for (let i = 0; i < bullpen.length && i < 8; i++) {
-    const pos = infieldPos(i, bh);
-    if (dist(px, py, pos.x, pos.y) < 14) return { project: bullpen[i], type: 'infield' };
+    if (dist(px, py, ...Object.values(infieldPos(i, bh))) < 14) return { project: bullpen[i], type: 'infield' };
   }
   for (let i = 0; i < retired.length && i < 8; i++) {
-    const pos = infieldPos(i, rh);
-    if (dist(px, py, pos.x, pos.y) < 14) return { project: retired[i], type: 'infield' };
+    if (dist(px, py, ...Object.values(infieldPos(i, rh))) < 14) return { project: retired[i], type: 'infield' };
   }
   return null;
 }
@@ -587,23 +658,17 @@ async function onDragEnd(e) {
 
   if (type === 'track') {
     if (inside) {
-      const lane = x < g.infield.x + g.infield.w/2 ? 'bullpen' : 'retired';
-      await api.patch(id, { lane });
+      await api.patch(id, { lane: x < g.infield.x + g.infield.w/2 ? 'bullpen' : 'retired' });
     } else {
-      const progress = angleToProgress(x, y, g);
-      const lv = laneValueFor(x, y, g);
-      dotLanePos[id] = lv;
-      await api.patch(id, { progress });
+      dotLanePos[id] = laneValueFor(x, y, g);
+      await api.patch(id, { progress: angleToProgress(x, y, g) });
     }
   } else {
     if (!inside) {
-      const progress = angleToProgress(x, y, g);
-      const lv = laneValueFor(x, y, g);
-      dotLanePos[id] = lv;
-      await api.patch(id, { lane: 'racing', progress });
+      dotLanePos[id] = laneValueFor(x, y, g);
+      await api.patch(id, { lane: 'racing', progress: angleToProgress(x, y, g) });
     } else {
-      const lane = x < g.infield.x + g.infield.w/2 ? 'bullpen' : 'retired';
-      await api.patch(id, { lane });
+      await api.patch(id, { lane: x < g.infield.x + g.infield.w/2 ? 'bullpen' : 'retired' });
     }
   }
   await refresh();
@@ -611,9 +676,12 @@ async function onDragEnd(e) {
 
 // ─── Cards ───────────────────────────────────────────────────────────────────
 function esc(s) {
-  return String(s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function hexToRgba(hex, a) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
 }
 
 function renderCards() {
@@ -621,31 +689,41 @@ function renderCards() {
   const bullpen = projects.filter(p => p.lane === 'bullpen');
   const retired  = projects.filter(p => p.lane === 'retired');
 
-  // Racers
+  // Racers — color-tinted rows with progress bars
   document.getElementById('racersList').innerHTML = racing.length === 0
     ? '<div class="empty-label">No projects racing</div>'
     : racing.map(p => `
-        <div class="racer-row">
-          <div class="dot-circle" style="width:14px;height:14px;background:${p.colorHex}"></div>
-          <span class="racer-name">${esc(p.name)}</span>
-          <span class="racer-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>
+        <div class="racer-row" style="
+          border-left-color: ${p.colorHex};
+          background: linear-gradient(90deg, ${hexToRgba(p.colorHex, 0.10)} 0%, ${hexToRgba(p.colorHex, 0.03)} 60%, transparent 100%);
+        ">
+          <div class="dot-circle" style="width:12px;height:12px;background:${p.colorHex};box-shadow:0 0 10px ${hexToRgba(p.colorHex,0.7)}"></div>
+          <div class="racer-info">
+            <div class="racer-header">
+              <span class="racer-name">${esc(p.name)}</span>
+              <span class="racer-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${hexToRgba(p.colorHex,0.6)})"></div>
+            </div>
+          </div>
         </div>`).join('');
 
-  // Bullpen / Retired side cards
+  // Side cards — glowing dots
   document.getElementById('bullpenList').innerHTML = bullpen.length === 0
-    ? '<span style="color:rgba(255,255,255,0.3);font-size:14px">Empty</span>'
+    ? '<span style="color:rgba(255,255,255,0.25);font-size:13px">Empty</span>'
     : bullpen.map(p => `
         <div class="side-row">
-          <div class="dot-circle" style="width:10px;height:10px;background:${p.colorHex}"></div>
+          <div class="dot-circle" style="width:9px;height:9px;background:${p.colorHex};box-shadow:0 0 8px ${hexToRgba(p.colorHex,0.7)};flex-shrink:0"></div>
           <span class="side-name">${esc(p.name)}</span>
         </div>`).join('');
 
   document.getElementById('retiredList').innerHTML = retired.length === 0
-    ? '<span style="color:rgba(255,255,255,0.3);font-size:14px">Empty</span>'
+    ? '<span style="color:rgba(255,255,255,0.25);font-size:13px">Empty</span>'
     : retired.map(p => `
         <div class="side-row">
-          <div class="dot-circle" style="width:10px;height:10px;background:${p.colorHex}"></div>
-          <span class="side-name">${esc(p.name)}</span>
+          <div class="dot-circle" style="width:9px;height:9px;background:${p.colorHex};box-shadow:0 0 8px ${hexToRgba(p.colorHex,0.7)};flex-shrink:0;opacity:0.55"></div>
+          <span class="side-name" style="opacity:0.6">${esc(p.name)}</span>
         </div>`).join('');
 
   // Manage
@@ -653,9 +731,11 @@ function renderCards() {
   ml.innerHTML = projects.map(p => `
     <div class="project-row">
       <div class="row-main">
-        <div class="dot-circle" style="width:14px;height:14px;background:${p.colorHex}"></div>
+        <div class="dot-circle" style="width:13px;height:13px;background:${p.colorHex};box-shadow:0 0 10px ${hexToRgba(p.colorHex,0.6)};flex-shrink:0"></div>
         <input class="name-input" value="${esc(p.name)}" data-id="${p.id}">
-        ${p.lane === 'racing' ? `<span class="row-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>` : '<span class="row-pct"></span>'}
+        ${p.lane === 'racing'
+          ? `<span class="row-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>`
+          : '<span class="row-pct"></span>'}
         <button class="delete-btn" data-id="${p.id}" title="Delete">✕</button>
       </div>
       <div class="lane-selector">
@@ -673,32 +753,16 @@ function renderCards() {
       </div>` : ''}
     </div>`).join('');
 
-  // Events: delete
   ml.querySelectorAll('.delete-btn').forEach(btn =>
-    btn.addEventListener('click', async () => {
-      await api.del(btn.dataset.id);
-      await refresh();
-    })
+    btn.addEventListener('click', async () => { await api.del(btn.dataset.id); await refresh(); })
   );
-
-  // Events: name
   ml.querySelectorAll('.name-input').forEach(inp => {
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
-    inp.addEventListener('blur', async () => {
-      await api.patch(inp.dataset.id, { name: inp.value });
-      await refresh();
-    });
+    inp.addEventListener('blur', async () => { await api.patch(inp.dataset.id, { name: inp.value }); await refresh(); });
   });
-
-  // Events: lane buttons
   ml.querySelectorAll('.lane-btn').forEach(btn =>
-    btn.addEventListener('click', async () => {
-      await api.patch(btn.dataset.id, { lane: btn.dataset.lane });
-      await refresh();
-    })
+    btn.addEventListener('click', async () => { await api.patch(btn.dataset.id, { lane: btn.dataset.lane }); await refresh(); })
   );
-
-  // Events: progress slider
   ml.querySelectorAll('.progress-slider').forEach(slider => {
     slider.addEventListener('input', () => {
       const pct = parseInt(slider.value);

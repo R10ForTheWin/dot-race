@@ -36,6 +36,11 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/manifest.json')
+def manifest():
+    return render_template('manifest.json'), 200, {'Content-Type': 'application/manifest+json'}
+
+
 @app.route('/api/projects', methods=['GET'])
 def get_projects():
     return jsonify(load_projects())

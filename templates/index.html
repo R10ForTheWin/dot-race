@@ -18,10 +18,43 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* ── Page warm bloom ───────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -80px; left: -60px;
+      width: 500px; height: 500px;
+      background: radial-gradient(ellipse, rgba(255, 90, 0, 0.10) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      top: -40px; right: -80px;
+      width: 380px; height: 380px;
+      background: radial-gradient(ellipse, rgba(255, 110, 0, 0.09) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── App container ─────────────────────────────────────────── */
     #app {
       max-width: 480px;
       margin: 0 auto;
       padding: 48px 16px 52px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Speed streaks ─────────────────────────────────────────── */
+    .speed-streaks {
+      position: absolute;
+      top: 0; right: -16px;
+      width: 260px; height: 640px;
+      pointer-events: none;
+      z-index: 0;
+      overflow: visible;
     }
 
     /* ── Header ────────────────────────────────────────────────── */
@@ -30,119 +63,110 @@
       align-items: flex-start;
       margin-bottom: 22px;
       padding: 0 2px;
+      position: relative; z-index: 1;
     }
     .header-text { flex: 1; }
 
     .title-project-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 0;
+      gap: 9px;
+      margin-bottom: 1px;
     }
     .title-line {
-      height: 1.5px;
-      flex: 1;
-      background: linear-gradient(90deg, transparent, rgba(200,145,30,0.55));
+      height: 1.5px; flex: 1;
+      background: linear-gradient(90deg, transparent, rgba(200,140,25,0.60));
     }
-    .title-line.right {
-      background: linear-gradient(90deg, rgba(200,145,30,0.55), transparent);
+    .title-line.r {
+      background: linear-gradient(90deg, rgba(200,140,25,0.60), transparent);
     }
     .title-project-text {
       font-family: 'Rajdhani', 'Bebas Neue', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.38em;
-      color: #c8973a;
-      font-style: italic;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.40em;
+      color: #c8973a; font-style: italic;
     }
 
     .title-dot-race {
       font-family: 'Bebas Neue', Impact, 'Arial Black', sans-serif;
-      font-size: 82px;
-      font-weight: 400;
+      font-size: 80px; font-weight: 400;
+      font-style: italic;
       letter-spacing: 0.04em;
       line-height: 0.88;
-      background: linear-gradient(170deg,
-        #fffad0 0%,
-        #f5d060 14%,
-        #c88a10 32%,
-        #f0b835 48%,
-        #7c4e00 58%,
-        #d09820 68%,
-        #fff4a0 84%,
-        #c88a10 100%
-      );
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: drop-shadow(0 3px 12px rgba(180,120,10,0.50))
-              drop-shadow(0 1px 2px rgba(0,0,0,0.9));
+      color: #f5d055;
+      text-shadow:
+        0 0 6px  rgba(255, 230, 80,  0.95),
+        0 0 16px rgba(255, 185, 20,  0.85),
+        0 0 35px rgba(255, 140, 10,  0.65),
+        0 0 70px rgba(255, 100, 0,   0.40),
+        0 0 110px rgba(255, 65, 0,   0.18),
+        0  2px 5px rgba(0, 0, 0, 0.95);
     }
 
     .app-subtitle {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.20em;
-      color: rgba(255,255,255,0.28);
-      margin-top: 7px;
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.22em;
+      color: rgba(255,255,255,0.26);
+      margin-top: 8px;
     }
 
     .add-btn {
       width: 46px; height: 46px;
       border-radius: 50%;
       background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.14);
-      cursor: pointer;
-      color: rgba(255,255,255,0.70);
-      font-size: 26px;
-      font-weight: 200;
+      border: 1px solid rgba(255,255,255,0.13);
+      cursor: pointer; color: rgba(255,255,255,0.70);
+      font-size: 26px; font-weight: 200;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      margin-top: 10px;
+      flex-shrink: 0; margin-top: 12px;
       transition: all 0.2s;
-      line-height: 1;
+      box-shadow: 0 0 18px rgba(255, 110, 0, 0.15);
     }
-    .add-btn:hover { background: rgba(255,255,255,0.11); border-color: rgba(255,255,255,0.25); }
+    .add-btn:hover {
+      background: rgba(255,255,255,0.11);
+      box-shadow: 0 0 28px rgba(255, 110, 0, 0.28);
+    }
 
     /* ── Cards ─────────────────────────────────────────────────── */
     .card {
       background: #0f0e0d;
-      border: 1px solid rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 20px;
       margin-bottom: 14px;
       overflow: hidden;
+      position: relative;
+      /* Glass top-edge sheen */
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.07),
+        0 6px 24px rgba(0,0,0,0.60);
     }
 
     .section-header {
-      display: flex;
-      align-items: center;
-      gap: 9px;
+      display: flex; align-items: center; gap: 9px;
       padding: 16px 18px 12px;
     }
-    .section-label {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-    }
+    .section-label { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; }
     .racers-accent  { color: #c8973a; }
     .bullpen-accent { color: #c05040; }
     .retired-accent { color: #9a8050; }
     .manage-accent  { color: #c8973a; }
 
-    /* ── Track ──────────────────────────────────────────────────── */
+    /* ── Track card ─────────────────────────────────────────────── */
     .track-card {
       padding: 0;
-      border-color: rgba(200,140,25,0.30);
-      background: #080706;
+      border-color: rgba(200,135,20,0.28);
+      background:
+        radial-gradient(ellipse 90% 70% at 50% 50%, rgba(255, 75, 0, 0.07), transparent 70%),
+        #080706;
       box-shadow:
-        0 0 50px rgba(180,100,10,0.14),
-        inset 0 0 80px rgba(160,90,8,0.07);
+        0 0 50px  rgba(255, 110, 0, 0.22),
+        0 0 100px rgba(255,  80, 0, 0.10),
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        inset 0 0 50px rgba(255, 80, 0, 0.05);
     }
     #trackCanvas {
-      display: block;
-      width: 100%;
-      touch-action: none;
-      cursor: grab;
+      display: block; width: 100%;
+      touch-action: none; cursor: grab;
       border-radius: 20px;
     }
     #trackCanvas.dragging { cursor: grabbing; }
@@ -150,30 +174,38 @@
     /* ── Racers ─────────────────────────────────────────────────── */
     #racersList { padding: 0 12px 14px; }
     .racer-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 16px 16px;
-      background: #171512;
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px;
+      background: #181512;
       border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 14px;
-      margin-bottom: 8px;
+      border-radius: 14px; margin-bottom: 8px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
-    .racer-dot { border-radius: 50%; flex-shrink: 0; }
     .racer-body { flex: 1; min-width: 0; }
     .racer-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
     .racer-name { font-size: 19px; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.2px; }
     .racer-pct  { font-size: 18px; font-weight: 700; flex-shrink: 0; }
     .racer-chev { color: rgba(255,255,255,0.22); font-size: 17px; flex-shrink: 0; }
-    .prog-bar-bg   { height: 5px; background: rgba(255,255,255,0.10); border-radius: 3px; overflow: hidden; margin-top: 2px; }
+    .prog-bar-bg   { height: 5px; background: rgba(255,255,255,0.09); border-radius: 3px; overflow: hidden; }
     .prog-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
     .empty-label { font-size: 14px; color: rgba(255,255,255,0.22); padding: 4px 0 6px; }
 
     /* ── Side cards ─────────────────────────────────────────────── */
     .side-cards { display: flex; gap: 12px; margin-bottom: 14px; }
     .side-cards .card { flex: 1; margin-bottom: 0; }
-    .bullpen-card { border-color: rgba(180,60,50,0.32); background: #100b0a; }
-    .retired-card { border-color: rgba(160,110,20,0.28); background: #0e0d09; }
+
+    .bullpen-card {
+      border-color: rgba(180,60,50,0.32); background: #100b0a;
+      box-shadow:
+        0 0 28px rgba(200, 55, 40, 0.16),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .retired-card {
+      border-color: rgba(160,110,20,0.30); background: #0e0d09;
+      box-shadow:
+        0 0 28px rgba(180, 120, 15, 0.14),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
 
     .side-body { padding: 0 0 6px; }
     .side-item {
@@ -182,56 +214,50 @@
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     .side-item:last-child { border-bottom: none; }
-    .side-dot { border-radius: 50%; flex-shrink: 0; }
     .side-name { flex: 1; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.80); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .side-chev { color: rgba(255,255,255,0.20); font-size: 14px; flex-shrink: 0; }
+    .side-chev { color: rgba(255,255,255,0.20); font-size: 14px; }
 
     /* ── Manage ─────────────────────────────────────────────────── */
+    .manage-card {
+      box-shadow:
+        0 0 32px rgba(200, 130, 10, 0.12),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      border-color: rgba(200,130,15,0.18);
+    }
     .manage-body { padding: 4px 12px 12px; }
     .project-row {
       padding: 14px 16px;
-      background: #171512;
+      background: #181512;
       border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 14px;
-      margin-bottom: 8px;
+      border-radius: 14px; margin-bottom: 8px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
     }
     .row-top { display: flex; align-items: center; gap: 13px; margin-bottom: 12px; }
-    .manage-dot { border-radius: 50%; flex-shrink: 0; }
     .name-input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 19px;
-      font-weight: 700;
-      font-family: inherit;
-      letter-spacing: -0.2px;
-      padding: 0;
+      flex: 1; background: transparent; border: none;
+      color: white; font-size: 19px; font-weight: 700;
+      font-family: inherit; letter-spacing: -0.2px; padding: 0;
     }
     .name-input:focus { outline: none; }
     .delete-btn {
       background: none; border: none; cursor: pointer;
-      color: rgba(255,255,255,0.22);
-      font-size: 18px; line-height: 1; padding: 2px 0;
+      color: rgba(255,255,255,0.22); font-size: 19px; line-height: 1; padding: 2px 0;
       transition: color 0.15s;
     }
     .delete-btn:hover { color: rgba(255, 75, 75, 0.85); }
 
-    /* Lane buttons */
     .lane-selector { display: flex; gap: 8px; }
     .lane-btn {
       flex: 1; padding: 10px 4px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.09);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.32);
       font-size: 12px; font-weight: 600; font-family: inherit;
-      letter-spacing: 0.03em;
-      cursor: pointer; transition: all 0.18s;
+      letter-spacing: 0.03em; cursor: pointer; transition: all 0.18s;
     }
     .lane-btn:hover:not(.active) { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.65); }
 
-    /* Progress slider */
     .prog-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
     .prog-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: rgba(200,155,50,0.45); white-space: nowrap; }
     .prog-slider { flex: 1; cursor: pointer; }
@@ -240,52 +266,38 @@
     /* ── Modal ──────────────────────────────────────────────────── */
     .modal-overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.78);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.80);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       display: flex; align-items: center; justify-content: center;
-      z-index: 100;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.18s;
+      z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.18s;
     }
     .modal-overlay.visible { opacity: 1; pointer-events: all; }
     .modal {
       background: #141210;
-      border: 1px solid rgba(200,150,30,0.30);
-      border-radius: 22px; padding: 26px;
+      border: 1px solid rgba(200,150,30,0.30); border-radius: 22px; padding: 26px;
       width: min(320px, 88vw);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.9);
+      box-shadow: 0 0 60px rgba(255, 100, 0, 0.15), 0 30px 80px rgba(0,0,0,0.9);
     }
     .modal-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 26px;
-      letter-spacing: 0.08em;
-      color: #e8c060;
-      margin-bottom: 16px;
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 26px; letter-spacing: 0.10em; color: #f0c050; margin-bottom: 16px;
     }
     .modal-input {
-      width: 100%;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 11px; color: white;
-      font-size: 16px; font-family: inherit;
+      width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 11px; color: white; font-size: 16px; font-family: inherit;
       padding: 12px 14px; margin-bottom: 18px;
     }
     .modal-input:focus { outline: none; border-color: rgba(200,150,30,0.55); }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
     .modal-cancel {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.50);
-      border-radius: 11px; padding: 10px 18px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.50); border-radius: 11px; padding: 10px 18px;
       font-size: 15px; font-family: inherit; cursor: pointer;
     }
     .modal-cancel:hover { background: rgba(255,255,255,0.09); }
     .modal-add {
-      background: rgba(200,150,25,0.25);
-      border: 1px solid rgba(200,150,25,0.52);
-      color: #f0c055;
-      border-radius: 11px; padding: 10px 20px;
+      background: rgba(200,150,25,0.25); border: 1px solid rgba(200,150,25,0.52);
+      color: #f0c055; border-radius: 11px; padding: 10px 20px;
       font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer;
       transition: background 0.15s;
     }
@@ -295,13 +307,37 @@
 <body>
 <div id="app">
 
+  <!-- Speed streaks (decorative) -->
+  <div class="speed-streaks" aria-hidden="true">
+    <svg viewBox="0 0 260 640" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+      <defs>
+        <filter id="sg" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="sg2" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Main sweep arc -->
+      <path d="M 230 10 C 290 180, 270 400, 200 620" stroke="rgba(255,120,8,0.38)" stroke-width="2.5" filter="url(#sg)"/>
+      <!-- Inner arc -->
+      <path d="M 210 20 C 265 170, 250 380, 185 590" stroke="rgba(255,100,5,0.22)" stroke-width="1.8" filter="url(#sg2)"/>
+      <!-- Short accent near top -->
+      <path d="M 245 5 C 268 60, 260 120, 238 180" stroke="rgba(255,140,15,0.28)" stroke-width="1.5" filter="url(#sg2)"/>
+      <!-- Outermost faint arc -->
+      <path d="M 250 0 C 320 200, 295 450, 215 650" stroke="rgba(255,80,0,0.12)" stroke-width="3.5" filter="url(#sg)"/>
+    </svg>
+  </div>
+
   <!-- Header -->
   <div class="header-bar">
     <div class="header-text">
       <div class="title-project-row">
         <div class="title-line"></div>
         <span class="title-project-text">PROJECT</span>
-        <div class="title-line right"></div>
+        <div class="title-line r"></div>
       </div>
       <div class="title-dot-race">DOT RACE</div>
       <p class="app-subtitle">TRACK PROGRESS. DRIVE RESULTS.</p>
@@ -310,12 +346,12 @@
   </div>
 
   <!-- Track -->
-  <div class="card track-card">
+  <div class="card track-card" style="position:relative;z-index:1">
     <canvas id="trackCanvas"></canvas>
   </div>
 
   <!-- Racers -->
-  <div class="card">
+  <div class="card" style="position:relative;z-index:1">
     <div class="section-header">
       <svg class="racers-accent" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
         <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
@@ -326,7 +362,7 @@
   </div>
 
   <!-- Bullpen + Retired -->
-  <div class="side-cards">
+  <div class="side-cards" style="position:relative;z-index:1">
     <div class="card bullpen-card">
       <div class="section-header">
         <svg class="bullpen-accent" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
@@ -339,7 +375,7 @@
     <div class="card retired-card">
       <div class="section-header">
         <svg class="retired-accent" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12 .94 1H5.12z"/>
+          <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
         </svg>
         <span class="section-label retired-accent">RETIRED</span>
       </div>
@@ -348,7 +384,7 @@
   </div>
 
   <!-- Manage -->
-  <div class="card">
+  <div class="card manage-card" style="position:relative;z-index:1">
     <div class="section-header">
       <svg class="manage-accent" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
         <path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.63-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
@@ -408,160 +444,117 @@ function resizeCanvas() {
 // ─── Geometry ────────────────────────────────────────────────────────────────
 function geo() {
   const M = 10;
-  const outer   = { x: M,      y: M,      w: W-2*M,       h: TRACK_H-2*M       };
-  const ring2   = { x: M+26,   y: M+26,   w: W-2*(M+26),  h: TRACK_H-2*(M+26)  };
-  const inner   = { x: M+52,   y: M+52,   w: W-2*(M+52),  h: TRACK_H-2*(M+52)  };
-  const infield = { x: M+68,   y: M+60,   w: W-2*(M+68),  h: TRACK_H-2*(M+60)  };
-  return { outer, ring2, inner, infield, cx: W/2, cy: TRACK_H/2 };
+  return {
+    outer:   { x: M,    y: M,    w: W-2*M,       h: TRACK_H-2*M       },
+    ring2:   { x: M+26, y: M+26, w: W-2*(M+26),  h: TRACK_H-2*(M+26)  },
+    inner:   { x: M+52, y: M+52, w: W-2*(M+52),  h: TRACK_H-2*(M+52)  },
+    infield: { x: M+68, y: M+60, w: W-2*(M+68),  h: TRACK_H-2*(M+60)  },
+    cx: W/2, cy: TRACK_H/2,
+  };
 }
 
 function capsulePath(r) {
-  const rad = r.h / 2;
+  const rad = r.h/2;
   ctx.beginPath();
-  ctx.moveTo(r.x+rad, r.y);
-  ctx.lineTo(r.x+r.w-rad, r.y);
+  ctx.moveTo(r.x+rad, r.y); ctx.lineTo(r.x+r.w-rad, r.y);
   ctx.arc(r.x+r.w-rad, r.y+rad, rad, -Math.PI/2, Math.PI/2);
   ctx.lineTo(r.x+rad, r.y+r.h);
   ctx.arc(r.x+rad, r.y+rad, rad, Math.PI/2, -Math.PI/2);
   ctx.closePath();
 }
 
-function roundRectPath(x, y, w, h, r) {
+function roundRectPath(x,y,w,h,r) {
   ctx.beginPath();
   ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
   ctx.arc(x+w-r,y+r,r,-Math.PI/2,Math.PI/2);
-  ctx.lineTo(x+r,y+h);
-  ctx.arc(x+r,y+r,r,Math.PI/2,-Math.PI/2);
+  ctx.lineTo(x+r,y+h); ctx.arc(x+r,y+r,r,Math.PI/2,-Math.PI/2);
   ctx.closePath();
 }
 
 function pointOnTrack(progress, lane, g) {
-  const DS = 7;
-  const angle  = -(progress * Math.PI*2) - Math.PI/2;
-  const outerA = g.outer.w/2-DS, outerB = g.outer.h/2-DS;
-  const innerA = g.inner.w/2+DS, innerB = g.inner.h/2+DS;
-  const a = outerA - (outerA-innerA)*lane;
-  const b = outerB - (outerB-innerB)*lane;
-  return { x: g.cx + Math.cos(angle)*a, y: g.cy + Math.sin(angle)*b };
-}
-
-function angleToProgress(px, py, g) {
-  const angle = Math.atan2(py-g.cy, px-g.cx);
-  const p = -(angle + Math.PI/2) / (Math.PI*2);
-  return p < 0 ? p+1 : p;
-}
-
-function laneValueFor(px, py, g) {
-  const dx = Math.abs(px-g.cx), dy = Math.abs(py-g.cy);
-  const on  = Math.max(dx/(g.outer.w/2), dy/(g.outer.h/2));
-  const inn = Math.max(dx/(g.inner.w/2), dy/(g.inner.h/2));
-  return Math.min(Math.max((on-inn)+0.5, 0.05), 0.95);
-}
-
-function inInfield(px, py, g) {
-  const f = g.infield;
-  return px>=f.x && px<=f.x+f.w && py>=f.y && py<=f.y+f.h;
-}
-
-function bullpenHalf(g) {
-  const f=g.infield;
-  return {x:f.x, y:f.y, w:(f.w-1)/2, h:f.h};
-}
-function retiredHalf(g) {
-  const f=g.infield, hw=(f.w-1)/2;
-  return {x:f.x+hw+1, y:f.y, w:hw, h:f.h};
-}
-
-function infieldPos(idx, frame) {
-  const DS=14, step=DS+4;
-  const cols = Math.max(1, Math.floor((frame.w-10)/step));
+  const DS=7, angle=-(progress*Math.PI*2)-Math.PI/2;
+  const outerA=g.outer.w/2-DS, outerB=g.outer.h/2-DS;
+  const innerA=g.inner.w/2+DS, innerB=g.inner.h/2+DS;
   return {
-    x: frame.x + 8 + (idx%cols)*step + DS/2,
-    y: frame.y + 22 + Math.floor(idx/cols)*step + DS/2,
+    x: g.cx + Math.cos(angle)*(outerA-(outerA-innerA)*lane),
+    y: g.cy + Math.sin(angle)*(outerB-(outerB-innerB)*lane),
   };
 }
 
-function dist(x1,y1,x2,y2) { return Math.hypot(x2-x1, y2-y1); }
-
-// ─── Drawing ─────────────────────────────────────────────────────────────────
-function render() {
-  if (!W) return;
-  ctx.clearRect(0, 0, W, TRACK_H);
-  const g = geo();
-  drawTrack(g);
-  drawStartFinish(g);
-  drawInfieldLabels(g);
-  drawInfieldDots(g);
-  drawTrackDots(g);
+function angleToProgress(px,py,g) {
+  const p = -(Math.atan2(py-g.cy, px-g.cx)+Math.PI/2)/(Math.PI*2);
+  return p < 0 ? p+1 : p;
 }
 
-// Stacked-stroke neon: no shadowBlur — works perfectly at any DPR
-const NEON_PASSES = [
-  { w: 48,  c: 'rgba(150, 55, 0, 0.030)' },
-  { w: 30,  c: 'rgba(190, 80, 4, 0.065)' },
-  { w: 17,  c: 'rgba(225, 108, 7, 0.150)' },
-  { w: 8,   c: 'rgba(248, 138, 11, 0.360)' },
-  { w: 3,   c: 'rgba(255, 168, 20, 0.800)' },
-  { w: 1.4, c: 'rgba(255, 222, 80, 1.000)' },
+function laneValueFor(px,py,g) {
+  const dx=Math.abs(px-g.cx), dy=Math.abs(py-g.cy);
+  const on=Math.max(dx/(g.outer.w/2), dy/(g.outer.h/2));
+  const inn=Math.max(dx/(g.inner.w/2), dy/(g.inner.h/2));
+  return Math.min(Math.max((on-inn)+0.5, 0.05), 0.95);
+}
+
+function inInfield(px,py,g) {
+  const f=g.infield;
+  return px>=f.x && px<=f.x+f.w && py>=f.y && py<=f.y+f.h;
+}
+
+function bullpenHalf(g) { const f=g.infield; return {x:f.x,y:f.y,w:(f.w-1)/2,h:f.h}; }
+function retiredHalf(g) { const f=g.infield,hw=(f.w-1)/2; return {x:f.x+hw+1,y:f.y,w:hw,h:f.h}; }
+
+function infieldPos(idx, frame) {
+  const DS=14, step=DS+4, cols=Math.max(1,Math.floor((frame.w-10)/step));
+  return { x:frame.x+8+(idx%cols)*step+DS/2, y:frame.y+22+Math.floor(idx/cols)*step+DS/2 };
+}
+
+function dist(x1,y1,x2,y2) { return Math.hypot(x2-x1,y2-y1); }
+
+// ─── Drawing ─────────────────────────────────────────────────────────────────
+const NEON = [
+  {w:48, c:'rgba(148,54,0,0.032)'}, {w:30, c:'rgba(192,80,4,0.068)'},
+  {w:17, c:'rgba(228,110,7,0.155)'},{w:8,  c:'rgba(248,140,11,0.370)'},
+  {w:3,  c:'rgba(255,170,20,0.820)'},{w:1.4,c:'rgba(255,222,78,1.000)'},
 ];
 
 function drawNeonRing(rect) {
-  for (const { w, c } of NEON_PASSES) {
-    ctx.save();
-    capsulePath(rect);
-    ctx.strokeStyle = c;
-    ctx.lineWidth   = w;
-    ctx.stroke();
-    ctx.restore();
+  for (const {w,c} of NEON) {
+    ctx.save(); capsulePath(rect);
+    ctx.strokeStyle=c; ctx.lineWidth=w; ctx.stroke(); ctx.restore();
   }
 }
 
 function drawTrack(g) {
-  // Base fills
   ctx.save();
-  capsulePath(g.outer); ctx.fillStyle = '#0c0907'; ctx.fill();
-  capsulePath(g.inner); ctx.fillStyle = '#060407'; ctx.fill();
+  capsulePath(g.outer); ctx.fillStyle='#0c0907'; ctx.fill();
+  capsulePath(g.inner); ctx.fillStyle='#060407'; ctx.fill();
   ctx.restore();
-
-  // 3 glowing rings
   drawNeonRing(g.outer);
   drawNeonRing(g.ring2);
   drawNeonRing(g.inner);
-
-  // Re-fill infield to cover glow bleed from inner ring
-  ctx.save();
-  capsulePath(g.inner); ctx.fillStyle = '#060407'; ctx.fill();
-  ctx.restore();
+  // Recover infield
+  ctx.save(); capsulePath(g.inner); ctx.fillStyle='#060407'; ctx.fill(); ctx.restore();
 }
 
 function drawStartFinish(g) {
-  const topY=g.outer.y, innerTopY=g.inner.y;
-  const h=innerTopY-topY, midY=(topY+innerTopY)/2;
-  const cx=g.cx;
+  const topY=g.outer.y, innerTopY=g.inner.y, h=innerTopY-topY;
+  const midY=(topY+innerTopY)/2, cx=g.cx;
   ctx.save();
-  ctx.fillStyle='rgba(255,255,255,0.92)';
-  ctx.fillRect(cx-8, topY, 3, h);
+  ctx.fillStyle='rgba(255,255,255,0.92)'; ctx.fillRect(cx-8,topY,3,h);
   const cellW=4, rows=Math.max(4,Math.floor(h/cellW)), cellH=h/rows;
-  for (let row=0; row<rows; row++)
-    for (let col=0; col<2; col++) {
-      ctx.fillStyle=(row+col)%2===0?'rgba(255,255,255,0.92)':'rgba(0,0,0,0.92)';
-      ctx.fillRect(cx+2+col*cellW, topY+row*cellH, cellW, cellH);
-    }
-  drawPill('S', cx-24, midY);
-  drawPill('F', cx+24, midY);
+  for(let r=0;r<rows;r++) for(let c=0;c<2;c++){
+    ctx.fillStyle=(r+c)%2===0?'rgba(255,255,255,0.92)':'rgba(0,0,0,0.92)';
+    ctx.fillRect(cx+2+c*cellW, topY+r*cellH, cellW, cellH);
+  }
+  drawPill('S',cx-24,midY); drawPill('F',cx+24,midY);
   ctx.restore();
 }
 
-function drawPill(label, cx, cy) {
+function drawPill(label,cx,cy) {
   ctx.font='700 8px -apple-system,sans-serif';
-  const tw=ctx.measureText(label).width;
-  const pw=tw+10, ph=17;
-  roundRectPath(cx-pw/2, cy-ph/2, pw, ph, ph/2);
-  ctx.fillStyle='rgba(240,235,215,0.92)';
-  ctx.fill();
-  ctx.fillStyle='#0a0808';
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(label, cx, cy+0.5);
+  const tw=ctx.measureText(label).width, pw=tw+10, ph=17;
+  roundRectPath(cx-pw/2,cy-ph/2,pw,ph,ph/2);
+  ctx.fillStyle='rgba(240,235,215,0.92)'; ctx.fill();
+  ctx.fillStyle='#0a0808'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(label,cx,cy+0.5);
 }
 
 function drawInfieldLabels(g) {
@@ -570,12 +563,28 @@ function drawInfieldLabels(g) {
   ctx.font='500 11px -apple-system,sans-serif';
   ctx.fillStyle='rgba(255,255,255,0.45)';
   ctx.textAlign='left'; ctx.textBaseline='top';
-  ctx.fillText('Bullpen', f.x+8, f.y+8);
-  ctx.fillStyle='rgba(255,255,255,0.12)';
-  ctx.fillRect(f.x+f.w/2, f.y+8, 1, f.h-16);
-  ctx.fillStyle='rgba(255,255,255,0.45)';
-  ctx.fillText('Retired', f.x+f.w/2+8, f.y+8);
+  ctx.fillText('Bullpen',f.x+8,f.y+8);
+  ctx.fillStyle='rgba(255,255,255,0.11)'; ctx.fillRect(f.x+f.w/2,f.y+8,1,f.h-16);
+  ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.fillText('Retired',f.x+f.w/2+8,f.y+8);
   ctx.restore();
+}
+
+// Comet trail: draws N fading dots behind each racing dot
+function drawCometTrail(progress, lane, hex, g) {
+  const steps = 5;
+  for (let i = steps; i >= 1; i--) {
+    const tp = Math.max(0, progress - i * 0.013);
+    const pos = pointOnTrack(tp, lane, g);
+    const alpha = ((steps - i + 1) / (steps + 2)) * 0.60;
+    const r = ((steps - i + 1) / steps) * 5;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.shadowColor = hex;
+    ctx.shadowBlur = 6 * DPR;
+    ctx.beginPath(); ctx.arc(pos.x, pos.y, r, 0, Math.PI*2);
+    ctx.fillStyle = hex; ctx.fill();
+    ctx.restore();
+  }
 }
 
 function drawInfieldDots(g) {
@@ -583,12 +592,12 @@ function drawInfieldDots(g) {
   projects.filter(p=>p.lane==='bullpen').slice(0,8).forEach((p,i)=>{
     const isDrag=drag&&drag.id===p.id;
     const pos=isDrag?drag:infieldPos(i,bh);
-    drawDot(pos.x, pos.y, 15, p.colorHex, isDrag, false);
+    drawDot(pos.x,pos.y,15,p.colorHex,isDrag,false);
   });
   projects.filter(p=>p.lane==='retired').slice(0,8).forEach((p,i)=>{
     const isDrag=drag&&drag.id===p.id;
     const pos=isDrag?drag:infieldPos(i,rh);
-    drawDot(pos.x, pos.y, 15, p.colorHex, isDrag, false);
+    drawDot(pos.x,pos.y,15,p.colorHex,isDrag,false);
   });
 }
 
@@ -599,44 +608,53 @@ function drawTrackDots(g) {
     const lane=dotLanePos[p.id]!==undefined?dotLanePos[p.id]:def;
     const isDrag=drag&&drag.id===p.id;
     const pos=isDrag?drag:pointOnTrack(p.progress,lane,g);
-    drawDot(pos.x, pos.y, 20, p.colorHex, isDrag, true);
+    // Comet trail (only when not dragging)
+    if (!isDrag) drawCometTrail(p.progress, lane, p.colorHex, g);
+    drawDot(pos.x,pos.y,20,p.colorHex,isDrag,true);
   });
 }
 
-function drawDot(x, y, diameter, hex, isDragging, outline) {
+function drawDot(x,y,diameter,hex,isDragging,outline) {
   const r=(diameter/2)*(isDragging?1.4:1.0);
   ctx.save();
   ctx.shadowColor=hex;
-  ctx.shadowBlur=(isDragging?28:(outline?20:12)) * DPR;
+  ctx.shadowBlur=(isDragging?28:(outline?20:12))*DPR;
   ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
   ctx.fillStyle=hex; ctx.fill();
   ctx.shadowBlur=0;
   ctx.strokeStyle=outline?'rgba(255,255,255,0.90)':'rgba(255,255,255,0.55)';
   ctx.lineWidth=outline?2.5:1.5; ctx.stroke();
-  // gloss
-  ctx.beginPath(); ctx.arc(x-r*0.22, y-r*0.28, r*0.34, 0, Math.PI*2);
+  ctx.beginPath(); ctx.arc(x-r*0.22,y-r*0.28,r*0.34,0,Math.PI*2);
   ctx.fillStyle='rgba(255,255,255,0.30)'; ctx.fill();
   ctx.restore();
 }
 
+function render() {
+  if (!W) return;
+  ctx.clearRect(0,0,W,TRACK_H);
+  const g=geo();
+  drawTrack(g); drawStartFinish(g); drawInfieldLabels(g);
+  drawInfieldDots(g); drawTrackDots(g);
+}
+
 // ─── Hit testing ─────────────────────────────────────────────────────────────
-function findDotAt(px, py) {
+function findDotAt(px,py) {
   const g=geo();
   const racing=projects.filter(p=>p.lane==='racing');
   const bullpen=projects.filter(p=>p.lane==='bullpen');
   const retired=projects.filter(p=>p.lane==='retired');
-  for (let i=0;i<racing.length;i++){
-    const p=racing[i], def=racing.length<=1?0.5:0.2+i/(racing.length-1)*0.6;
+  for(let i=0;i<racing.length;i++){
+    const p=racing[i],def=racing.length<=1?0.5:0.2+i/(racing.length-1)*0.6;
     const lane=dotLanePos[p.id]!==undefined?dotLanePos[p.id]:def;
     const pos=pointOnTrack(p.progress,lane,g);
     if(dist(px,py,pos.x,pos.y)<22) return {project:p,type:'track',lane};
   }
-  const bh=bullpenHalf(g), rh=retiredHalf(g);
-  for (let i=0;i<bullpen.length&&i<8;i++){
+  const bh=bullpenHalf(g),rh=retiredHalf(g);
+  for(let i=0;i<bullpen.length&&i<8;i++){
     const pos=infieldPos(i,bh);
     if(dist(px,py,pos.x,pos.y)<18) return {project:bullpen[i],type:'infield'};
   }
-  for (let i=0;i<retired.length&&i<8;i++){
+  for(let i=0;i<retired.length&&i<8;i++){
     const pos=infieldPos(i,rh);
     if(dist(px,py,pos.x,pos.y)<18) return {project:retired[i],type:'infield'};
   }
@@ -649,193 +667,129 @@ function evPos(e) {
   const src=(e.changedTouches||e.touches||[])[0]||e;
   return {x:src.clientX-rect.left, y:src.clientY-rect.top};
 }
-
-canvas.addEventListener('mousedown',  onDragStart);
-canvas.addEventListener('touchstart', onDragStart, {passive:false});
-function onDragStart(e) {
+canvas.addEventListener('mousedown',onDragStart);
+canvas.addEventListener('touchstart',onDragStart,{passive:false});
+function onDragStart(e){
   e.preventDefault();
-  const {x,y}=evPos(e), hit=findDotAt(x,y);
-  if (!hit) return;
-  drag={id:hit.project.id, type:hit.type, x, y};
+  const {x,y}=evPos(e),hit=findDotAt(x,y);
+  if(!hit) return;
+  drag={id:hit.project.id,type:hit.type,x,y};
   canvas.classList.add('dragging'); render();
 }
-
-window.addEventListener('mousemove',  onDragMove);
-window.addEventListener('touchmove',  onDragMove, {passive:false});
-function onDragMove(e) {
-  if (!drag) return;
-  e.preventDefault();
-  const {x,y}=evPos(e);
-  drag.x=x; drag.y=y;
-  if (drag.type==='track') {
+window.addEventListener('mousemove',onDragMove);
+window.addEventListener('touchmove',onDragMove,{passive:false});
+function onDragMove(e){
+  if(!drag) return; e.preventDefault();
+  const {x,y}=evPos(e); drag.x=x; drag.y=y;
+  if(drag.type==='track'){
     const g=geo();
-    if (!inInfield(x,y,g)) {
+    if(!inInfield(x,y,g)){
       const p=projects.find(p=>p.id===drag.id);
       if(p){p.progress=angleToProgress(x,y,g); dotLanePos[drag.id]=laneValueFor(x,y,g);}
     }
   }
   render();
 }
-
-window.addEventListener('mouseup',  onDragEnd);
-window.addEventListener('touchend', onDragEnd);
-async function onDragEnd(e) {
-  if (!drag) return;
-  const {x,y}=evPos(e), id=drag.id, type=drag.type;
+window.addEventListener('mouseup',onDragEnd);
+window.addEventListener('touchend',onDragEnd);
+async function onDragEnd(e){
+  if(!drag) return;
+  const {x,y}=evPos(e),id=drag.id,type=drag.type;
   drag=null; canvas.classList.remove('dragging');
-  const g=geo(), inside=inInfield(x,y,g);
-  if (type==='track') {
-    if (inside) await api.patch(id,{lane:x<g.infield.x+g.infield.w/2?'bullpen':'retired'});
-    else { dotLanePos[id]=laneValueFor(x,y,g); await api.patch(id,{progress:angleToProgress(x,y,g)}); }
-  } else {
-    if (!inside) { dotLanePos[id]=laneValueFor(x,y,g); await api.patch(id,{lane:'racing',progress:angleToProgress(x,y,g)}); }
+  const g=geo(),inside=inInfield(x,y,g);
+  if(type==='track'){
+    if(inside) await api.patch(id,{lane:x<g.infield.x+g.infield.w/2?'bullpen':'retired'});
+    else{ dotLanePos[id]=laneValueFor(x,y,g); await api.patch(id,{progress:angleToProgress(x,y,g)}); }
+  }else{
+    if(!inside){ dotLanePos[id]=laneValueFor(x,y,g); await api.patch(id,{lane:'racing',progress:angleToProgress(x,y,g)}); }
     else await api.patch(id,{lane:x<g.infield.x+g.infield.w/2?'bullpen':'retired'});
   }
   await refresh();
 }
 
 // ─── Cards ───────────────────────────────────────────────────────────────────
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function rgba(hex, a) {
-  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
-  return `rgba(${r},${g},${b},${a})`;
-}
-function laneActiveStyle(lane) {
-  return {
-    bullpen: 'background:rgba(160,35,30,0.60);border-color:rgba(210,65,55,0.75);color:rgb(255,115,105);',
-    racing:  'background:rgba(25,115,50,0.55);border-color:rgba(55,170,80,0.72);color:rgb(80,220,115);',
-    retired: 'background:rgba(140,95,8,0.58);border-color:rgba(200,148,22,0.75);color:rgb(255,190,52);',
-  }[lane] || '';
-}
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function rgba(hex,a){ const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return `rgba(${r},${g},${b},${a})`; }
+function laneStyle(lane){ return {bullpen:'background:rgba(155,35,30,0.58);border-color:rgba(205,65,55,0.75);color:rgb(255,115,105);',racing:'background:rgba(25,115,50,0.55);border-color:rgba(55,170,80,0.72);color:rgb(80,220,115);',retired:'background:rgba(140,95,8,0.58);border-color:rgba(198,148,22,0.75);color:rgb(252,188,52);'}[lane]||''; }
 
-function renderCards() {
-  const racing =projects.filter(p=>p.lane==='racing');
+function renderCards(){
+  const racing=projects.filter(p=>p.lane==='racing');
   const bullpen=projects.filter(p=>p.lane==='bullpen');
-  const retired =projects.filter(p=>p.lane==='retired');
+  const retired=projects.filter(p=>p.lane==='retired');
 
-  // Racers
-  document.getElementById('racersList').innerHTML = racing.length===0
-    ? '<div class="empty-label">No projects racing</div>'
-    : racing.map(p=>`
-        <div class="racer-row">
-          <div class="racer-dot" style="width:20px;height:20px;background:${p.colorHex};box-shadow:0 0 16px ${rgba(p.colorHex,0.85)};border-radius:50%"></div>
-          <div class="racer-body">
-            <div class="racer-top">
-              <span class="racer-name">${esc(p.name)}</span>
-              <span class="racer-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>
-              <span class="racer-chev">›</span>
-            </div>
-            <div class="prog-bar-bg">
-              <div class="prog-bar-fill" style="width:${Math.round(p.progress*100)}%;background:${p.colorHex}"></div>
-            </div>
+  document.getElementById('racersList').innerHTML=racing.length===0
+    ?'<div class="empty-label">No projects racing</div>'
+    :racing.map(p=>`
+      <div class="racer-row">
+        <div style="width:20px;height:20px;border-radius:50%;flex-shrink:0;background:${p.colorHex};box-shadow:0 0 16px ${rgba(p.colorHex,0.85)},0 0 6px ${rgba(p.colorHex,0.6)}"></div>
+        <div class="racer-body">
+          <div class="racer-top">
+            <span class="racer-name">${esc(p.name)}</span>
+            <span class="racer-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>
+            <span class="racer-chev">›</span>
           </div>
-        </div>`).join('');
+          <div class="prog-bar-bg">
+            <div class="prog-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${rgba(p.colorHex,0.7)})"></div>
+          </div>
+        </div>
+      </div>`).join('');
 
-  // Bullpen
-  document.getElementById('bullpenList').innerHTML = bullpen.length===0
-    ? '<div style="color:rgba(255,255,255,0.22);font-size:13px;padding:8px 14px 12px">Empty</div>'
-    : bullpen.map(p=>`
-        <div class="side-item">
-          <div class="side-dot" style="width:11px;height:11px;background:${p.colorHex};box-shadow:0 0 9px ${rgba(p.colorHex,0.75)}"></div>
-          <span class="side-name">${esc(p.name)}</span>
-          <span class="side-chev">›</span>
-        </div>`).join('');
+  document.getElementById('bullpenList').innerHTML=bullpen.length===0
+    ?'<div style="color:rgba(255,255,255,0.22);font-size:13px;padding:8px 14px 12px">Empty</div>'
+    :bullpen.map(p=>`<div class="side-item"><div style="width:11px;height:11px;border-radius:50%;flex-shrink:0;background:${p.colorHex};box-shadow:0 0 9px ${rgba(p.colorHex,0.75)}"></div><span class="side-name">${esc(p.name)}</span><span class="side-chev">›</span></div>`).join('');
 
-  // Retired
-  document.getElementById('retiredList').innerHTML = retired.length===0
-    ? '<div style="color:rgba(255,255,255,0.22);font-size:13px;padding:8px 14px 12px">Empty</div>'
-    : retired.map(p=>`
-        <div class="side-item">
-          <div class="side-dot" style="width:11px;height:11px;background:${p.colorHex};opacity:0.5;box-shadow:0 0 7px ${rgba(p.colorHex,0.55)}"></div>
-          <span class="side-name" style="opacity:0.58">${esc(p.name)}</span>
-          <span class="side-chev">›</span>
-        </div>`).join('');
+  document.getElementById('retiredList').innerHTML=retired.length===0
+    ?'<div style="color:rgba(255,255,255,0.22);font-size:13px;padding:8px 14px 12px">Empty</div>'
+    :retired.map(p=>`<div class="side-item"><div style="width:11px;height:11px;border-radius:50%;flex-shrink:0;background:${p.colorHex};opacity:0.5;box-shadow:0 0 7px ${rgba(p.colorHex,0.55)}"></div><span class="side-name" style="opacity:0.58">${esc(p.name)}</span><span class="side-chev">›</span></div>`).join('');
 
-  // Manage
   const ml=document.getElementById('manageList');
   ml.innerHTML=projects.map(p=>`
     <div class="project-row">
       <div class="row-top">
-        <div class="manage-dot" style="width:18px;height:18px;flex-shrink:0;background:${p.colorHex};border-radius:50%;box-shadow:0 0 14px ${rgba(p.colorHex,0.75)}"></div>
+        <div style="width:18px;height:18px;border-radius:50%;flex-shrink:0;background:${p.colorHex};box-shadow:0 0 14px ${rgba(p.colorHex,0.75)}"></div>
         <input class="name-input" value="${esc(p.name)}" data-id="${p.id}" spellcheck="false">
         <button class="delete-btn" data-id="${p.id}">×</button>
       </div>
       <div class="lane-selector">
-        ${['bullpen','racing','retired'].map(l=>`
-          <button class="lane-btn${p.lane===l?' active':''}" data-id="${p.id}" data-lane="${l}"
-            style="${p.lane===l?laneActiveStyle(l):''}">${l.charAt(0).toUpperCase()+l.slice(1)}</button>
-        `).join('')}
+        ${['bullpen','racing','retired'].map(l=>`<button class="lane-btn${p.lane===l?' active':''}" data-id="${p.id}" data-lane="${l}" style="${p.lane===l?laneStyle(l):''}">${l[0].toUpperCase()+l.slice(1)}</button>`).join('')}
       </div>
       ${p.lane==='racing'?`
       <div class="prog-row">
         <span class="prog-label">PROGRESS</span>
-        <input type="range" class="prog-slider" min="0" max="100" value="${Math.round(p.progress*100)}"
-               data-id="${p.id}" style="accent-color:${p.colorHex}">
+        <input type="range" class="prog-slider" min="0" max="100" value="${Math.round(p.progress*100)}" data-id="${p.id}" style="accent-color:${p.colorHex}">
         <span class="prog-val" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>
       </div>`:''}
     </div>`).join('');
 
-  ml.querySelectorAll('.delete-btn').forEach(btn=>
-    btn.addEventListener('click', async()=>{await api.del(btn.dataset.id); await refresh();})
-  );
+  ml.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',async()=>{await api.del(b.dataset.id);await refresh();}));
   ml.querySelectorAll('.name-input').forEach(inp=>{
-    inp.addEventListener('keydown', e=>{if(e.key==='Enter') inp.blur();});
-    inp.addEventListener('blur', async()=>{await api.patch(inp.dataset.id,{name:inp.value}); await refresh();});
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')inp.blur();});
+    inp.addEventListener('blur',async()=>{await api.patch(inp.dataset.id,{name:inp.value});await refresh();});
   });
-  ml.querySelectorAll('.lane-btn').forEach(btn=>
-    btn.addEventListener('click', async()=>{await api.patch(btn.dataset.id,{lane:btn.dataset.lane}); await refresh();})
-  );
-  ml.querySelectorAll('.prog-slider').forEach(slider=>{
-    slider.addEventListener('input', ()=>{
-      const pct=parseInt(slider.value);
-      const row=slider.closest('.project-row');
+  ml.querySelectorAll('.lane-btn').forEach(b=>b.addEventListener('click',async()=>{await api.patch(b.dataset.id,{lane:b.dataset.lane});await refresh();}));
+  ml.querySelectorAll('.prog-slider').forEach(s=>{
+    s.addEventListener('input',()=>{
+      const pct=parseInt(s.value);
+      const row=s.closest('.project-row');
       row.querySelector('.prog-val').textContent=pct+'%';
-      const p=projects.find(p=>p.id===slider.dataset.id);
-      if(p){p.progress=pct/100; render();}
+      const p=projects.find(p=>p.id===s.dataset.id);
+      if(p){p.progress=pct/100;render();}
     });
-    slider.addEventListener('change', async()=>{
-      await api.patch(slider.dataset.id,{progress:parseInt(slider.value)/100});
-      await refresh();
-    });
+    s.addEventListener('change',async()=>{await api.patch(s.dataset.id,{progress:parseInt(s.value)/100});await refresh();});
   });
 }
 
 // ─── Modal ───────────────────────────────────────────────────────────────────
-document.getElementById('addBtn').addEventListener('click',()=>{
-  document.getElementById('addModal').classList.add('visible');
-  document.getElementById('newProjectName').focus();
-});
-document.getElementById('cancelAdd').addEventListener('click', closeModal);
-document.getElementById('addModal').addEventListener('click', e=>{
-  if(e.target===document.getElementById('addModal')) closeModal();
-});
-document.getElementById('newProjectName').addEventListener('keydown', e=>{
-  if(e.key==='Enter')  document.getElementById('confirmAdd').click();
-  if(e.key==='Escape') closeModal();
-});
-document.getElementById('confirmAdd').addEventListener('click', async()=>{
-  const name=document.getElementById('newProjectName').value.trim();
-  await api.add(name||'');
-  closeModal(); await refresh();
-});
-function closeModal(){
-  document.getElementById('addModal').classList.remove('visible');
-  document.getElementById('newProjectName').value='';
-}
+document.getElementById('addBtn').addEventListener('click',()=>{document.getElementById('addModal').classList.add('visible');document.getElementById('newProjectName').focus();});
+document.getElementById('cancelAdd').addEventListener('click',closeModal);
+document.getElementById('addModal').addEventListener('click',e=>{if(e.target===document.getElementById('addModal'))closeModal();});
+document.getElementById('newProjectName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('confirmAdd').click();if(e.key==='Escape')closeModal();});
+document.getElementById('confirmAdd').addEventListener('click',async()=>{const name=document.getElementById('newProjectName').value.trim();await api.add(name||'');closeModal();await refresh();});
+function closeModal(){document.getElementById('addModal').classList.remove('visible');document.getElementById('newProjectName').value='';}
 
 // ─── Boot ────────────────────────────────────────────────────────────────────
-async function refresh(){
-  projects=await api.list();
-  renderCards(); render();
-}
-
-(async()=>{
-  await refresh();
-  resizeCanvas();
-  window.addEventListener('resize',()=>{resizeCanvas(); render();});
-})();
+async function refresh(){projects=await api.list();renderCards();render();}
+(async()=>{await refresh();resizeCanvas();window.addEventListener('resize',()=>{resizeCanvas();render();});})();
 </script>
 </body>
 </html>

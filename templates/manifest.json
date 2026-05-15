@@ -1,6 +1,6 @@
 {
-  "name": "Project Dot Race",
-  "short_name": "Dot Race",
+  "name": "Dottie",
+  "short_name": "Dottie",
   "description": "Track progress. Drive results.",
   "start_url": "/",
   "display": "standalone",

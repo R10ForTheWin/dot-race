@@ -200,22 +200,31 @@
     }
     #trackCanvas.dragging { cursor: grabbing; }
 
-    /* ── Racers ─────────────────────────────────────────────────── */
-    #racersList { padding: 0 12px 14px; }
-    .racer-row {
-      display: flex; align-items: center; gap: 14px;
-      padding: 16px;
+    /* ── Projects ───────────────────────────────────────────────── */
+    #projectsList { padding: 0 12px 14px; }
+    .proj-row {
       background: #181512;
       border: 1px solid rgba(255,255,255,0.07);
       border-radius: 14px; margin-bottom: 8px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+      overflow: hidden;
     }
-    .racer-body { flex: 1; min-width: 0; }
-    .racer-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-    .racer-name { font-size: 19px; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.2px; }
-    .racer-pct  { font-size: 18px; font-weight: 700; flex-shrink: 0; }
-    .racer-chev { color: rgba(255,255,255,0.22); font-size: 17px; flex-shrink: 0; }
-    .prog-bar-bg   { height: 5px; background: rgba(255,255,255,0.09); border-radius: 3px; overflow: hidden; }
+    .proj-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px; cursor: pointer;
+      -webkit-user-select: none; user-select: none;
+    }
+    .proj-body { flex: 1; min-width: 0; }
+    .proj-name-row { display: flex; align-items: center; gap: 8px; }
+    .proj-name { font-size: 19px; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.2px; }
+    .proj-pct  { font-size: 18px; font-weight: 700; flex-shrink: 0; }
+    .proj-chev { color: rgba(255,255,255,0.22); font-size: 18px; flex-shrink: 0; transition: transform 0.18s; }
+    .proj-row.expanded .proj-chev { transform: rotate(90deg); }
+    .proj-controls {
+      padding: 14px 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .prog-bar-bg   { height: 5px; background: rgba(255,255,255,0.09); border-radius: 3px; overflow: hidden; margin-top: 10px; }
     .prog-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
     .empty-label { font-size: 14px; color: rgba(255,255,255,0.22); padding: 4px 0 6px; }
 
@@ -246,22 +255,7 @@
     .side-name { flex: 1; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.80); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .side-chev { color: rgba(255,255,255,0.20); font-size: 14px; }
 
-    /* ── Manage ─────────────────────────────────────────────────── */
-    .manage-card {
-      box-shadow:
-        0 0 32px rgba(200, 130, 10, 0.12),
-        inset 0 1px 0 rgba(255,255,255,0.06);
-      border-color: rgba(200,130,15,0.18);
-    }
-    .manage-body { padding: 4px 12px 12px; }
-    .project-row {
-      padding: 14px 16px;
-      background: #181512;
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 14px; margin-bottom: 8px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-    }
-    .row-top { display: flex; align-items: center; gap: 13px; margin-bottom: 12px; }
+    /* ── Manage (shared controls) ───────────────────────────────── */
     .name-input {
       flex: 1; background: transparent; border: none;
       color: white; font-size: 19px; font-weight: 700;
@@ -406,15 +400,15 @@
     <canvas id="trackCanvas"></canvas>
   </div>
 
-  <!-- Racers -->
-  <div class="card" style="position:relative;z-index:1">
+  <!-- Projects -->
+  <div class="card" style="position:relative;z-index:1;box-shadow:0 0 32px rgba(200,130,10,0.12),inset 0 1px 0 rgba(255,255,255,0.06);border-color:rgba(200,130,15,0.18)">
     <div class="section-header">
       <svg class="racers-accent" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
         <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
       </svg>
-      <span class="section-label racers-accent">RACERS</span>
+      <span class="section-label racers-accent">PROJECTS</span>
     </div>
-    <div id="racersList"></div>
+    <div id="projectsList"></div>
   </div>
 
   <!-- Bullpen + Retired -->
@@ -439,16 +433,6 @@
     </div>
   </div>
 
-  <!-- Manage -->
-  <div class="card manage-card" style="position:relative;z-index:1">
-    <div class="section-header">
-      <svg class="manage-accent" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.63-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
-      </svg>
-      <span class="section-label manage-accent">MANAGE</span>
-    </div>
-    <div class="manage-body" id="manageList"></div>
-  </div>
 
 </div>
 
@@ -469,6 +453,7 @@
 let projects = [];
 let dotLanePos = {};
 let drag = null;
+let expandedId = null;
 
 // ─── API ─────────────────────────────────────────────────────────────────────
 const api = {
@@ -748,26 +733,8 @@ function rgba(hex,a){ const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3
 function laneStyle(lane){ return {bullpen:'background:rgba(155,35,30,0.58);border-color:rgba(205,65,55,0.75);color:rgb(255,115,105);',racing:'background:rgba(25,115,50,0.55);border-color:rgba(55,170,80,0.72);color:rgb(80,220,115);',retired:'background:rgba(140,95,8,0.58);border-color:rgba(198,148,22,0.75);color:rgb(252,188,52);'}[lane]||''; }
 
 function renderCards(){
-  const racing=projects.filter(p=>p.lane==='racing');
   const bullpen=projects.filter(p=>p.lane==='bullpen');
   const retired=projects.filter(p=>p.lane==='retired');
-
-  document.getElementById('racersList').innerHTML=racing.length===0
-    ?'<div class="empty-label">No projects racing</div>'
-    :racing.map(p=>`
-      <div class="racer-row">
-        <div style="width:20px;height:20px;border-radius:50%;flex-shrink:0;background:${p.colorHex};box-shadow:0 0 16px ${rgba(p.colorHex,0.85)},0 0 6px ${rgba(p.colorHex,0.6)}"></div>
-        <div class="racer-body">
-          <div class="racer-top">
-            <span class="racer-name">${esc(p.name)}</span>
-            <span class="racer-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>
-            <span class="racer-chev">›</span>
-          </div>
-          <div class="prog-bar-bg">
-            <div class="prog-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${rgba(p.colorHex,0.7)})"></div>
-          </div>
-        </div>
-      </div>`).join('');
 
   document.getElementById('bullpenList').innerHTML=bullpen.length===0
     ?'<div style="color:rgba(255,255,255,0.22);font-size:13px;padding:8px 14px 12px">Empty</div>'
@@ -777,36 +744,56 @@ function renderCards(){
     ?'<div style="color:rgba(255,255,255,0.22);font-size:13px;padding:8px 14px 12px">Empty</div>'
     :retired.map(p=>`<div class="side-item"><div style="width:11px;height:11px;border-radius:50%;flex-shrink:0;background:${p.colorHex};opacity:0.5;box-shadow:0 0 7px ${rgba(p.colorHex,0.55)}"></div><span class="side-name" style="opacity:0.58">${esc(p.name)}</span><span class="side-chev">›</span></div>`).join('');
 
-  const ml=document.getElementById('manageList');
-  ml.innerHTML=projects.map(p=>`
-    <div class="project-row">
-      <div class="row-top">
-        <div style="width:18px;height:18px;border-radius:50%;flex-shrink:0;background:${p.colorHex};box-shadow:0 0 14px ${rgba(p.colorHex,0.75)}"></div>
-        <input class="name-input" value="${esc(p.name)}" data-id="${p.id}" spellcheck="false">
-        <button class="delete-btn" data-id="${p.id}">×</button>
+  const pl=document.getElementById('projectsList');
+  pl.innerHTML=(projects.length===0?'<div class="empty-label" style="padding:0 16px 14px">No projects yet</div>':projects.map(p=>{
+    const isRacing=p.lane==='racing';
+    const isExp=expandedId===p.id;
+    return `
+    <div class="proj-row${isExp?' expanded':''}" data-id="${p.id}">
+      <div class="proj-header">
+        <div style="width:20px;height:20px;border-radius:50%;flex-shrink:0;background:${p.colorHex};box-shadow:0 0 16px ${rgba(p.colorHex,0.85)},0 0 6px ${rgba(p.colorHex,0.6)}"></div>
+        <div class="proj-body">
+          <div class="proj-name-row">
+            <span class="proj-name">${esc(p.name)}</span>
+            ${isRacing?`<span class="proj-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>`:`<span style="font-size:10px;font-weight:700;letter-spacing:0.06em;color:rgba(255,255,255,0.28);text-transform:uppercase">${p.lane}</span>`}
+          </div>
+          ${isRacing?`<div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${rgba(p.colorHex,0.7)})"></div></div>`:''}
+        </div>
+        <span class="proj-chev">›</span>
       </div>
-      <div class="lane-selector">
-        ${['bullpen','racing','retired'].map(l=>`<button class="lane-btn${p.lane===l?' active':''}" data-id="${p.id}" data-lane="${l}" style="${p.lane===l?laneStyle(l):''}">${l[0].toUpperCase()+l.slice(1)}</button>`).join('')}
-      </div>
-      ${p.lane==='racing'?`
-      <div class="prog-row">
-        <span class="prog-label">PROGRESS</span>
-        <input type="range" class="prog-slider" min="0" max="100" value="${Math.round(p.progress*100)}" data-id="${p.id}" style="accent-color:${p.colorHex}">
-        <span class="prog-val" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>
+      ${isExp?`
+      <div class="proj-controls">
+        <input class="name-input" value="${esc(p.name)}" data-id="${p.id}" spellcheck="false" style="width:100%;margin-bottom:12px">
+        <div class="lane-selector"${isRacing?' style="margin-bottom:12px"':''}>
+          ${['bullpen','racing','retired'].map(l=>`<button class="lane-btn${p.lane===l?' active':''}" data-id="${p.id}" data-lane="${l}" style="${p.lane===l?laneStyle(l):''}">${l[0].toUpperCase()+l.slice(1)}</button>`).join('')}
+        </div>
+        ${isRacing?`<div class="prog-row"><span class="prog-label">PROGRESS</span><input type="range" class="prog-slider" min="0" max="100" value="${Math.round(p.progress*100)}" data-id="${p.id}" style="accent-color:${p.colorHex}"><span class="prog-val" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span></div>`:''}
+        <div style="display:flex;justify-content:flex-end;margin-top:12px">
+          <button class="delete-btn" data-id="${p.id}" style="font-size:13px;color:rgba(255,80,80,0.65)">Delete</button>
+        </div>
       </div>`:''}
-    </div>`).join('');
+    </div>`;
+  }).join(''));
 
-  ml.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',async()=>{await api.del(b.dataset.id);await refresh();}));
-  ml.querySelectorAll('.name-input').forEach(inp=>{
+  pl.querySelectorAll('.proj-header').forEach(h=>{
+    h.addEventListener('click',()=>{
+      const id=h.closest('.proj-row').dataset.id;
+      expandedId=(expandedId===id?null:id);
+      renderCards();
+    });
+  });
+  pl.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',async e=>{e.stopPropagation();await api.del(b.dataset.id);expandedId=null;await refresh();}));
+  pl.querySelectorAll('.name-input').forEach(inp=>{
+    inp.addEventListener('click',e=>e.stopPropagation());
     inp.addEventListener('keydown',e=>{if(e.key==='Enter')inp.blur();});
     inp.addEventListener('blur',async()=>{await api.patch(inp.dataset.id,{name:inp.value});await refresh();});
   });
-  ml.querySelectorAll('.lane-btn').forEach(b=>b.addEventListener('click',async()=>{await api.patch(b.dataset.id,{lane:b.dataset.lane});await refresh();}));
-  ml.querySelectorAll('.prog-slider').forEach(s=>{
+  pl.querySelectorAll('.lane-btn').forEach(b=>b.addEventListener('click',async e=>{e.stopPropagation();await api.patch(b.dataset.id,{lane:b.dataset.lane});await refresh();}));
+  pl.querySelectorAll('.prog-slider').forEach(s=>{
+    s.addEventListener('click',e=>e.stopPropagation());
     s.addEventListener('input',()=>{
       const pct=parseInt(s.value);
-      const row=s.closest('.project-row');
-      row.querySelector('.prog-val').textContent=pct+'%';
+      s.closest('.proj-controls').querySelector('.prog-val').textContent=pct+'%';
       const p=projects.find(p=>p.id===s.dataset.id);
       if(p){p.progress=pct/100;render();}
     });

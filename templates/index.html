@@ -529,6 +529,7 @@
 
 <script>
 // ─── State ───────────────────────────────────────────────────────────────────
+const TOKEN = '{{ token }}';
 let projects = [];
 let dotLanePos = {};
 let drag = null;
@@ -536,10 +537,10 @@ let expandedId = null;
 
 // ─── API ─────────────────────────────────────────────────────────────────────
 const api = {
-  async list()          { return (await fetch('/api/projects')).json(); },
-  async add(name)       { return (await fetch('/api/projects', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name}) })).json(); },
-  async patch(id, data) { return (await fetch(`/api/projects/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) })).json(); },
-  async del(id)         { await fetch(`/api/projects/${id}`, { method:'DELETE' }); },
+  async list()          { return (await fetch(`/api/${TOKEN}/projects`)).json(); },
+  async add(name)       { return (await fetch(`/api/${TOKEN}/projects`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name}) })).json(); },
+  async patch(id, data) { return (await fetch(`/api/${TOKEN}/projects/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) })).json(); },
+  async del(id)         { await fetch(`/api/${TOKEN}/projects/${id}`, { method:'DELETE' }); },
 };
 
 // ─── Canvas ───────────────────────────────────────────────────────────────────
@@ -909,7 +910,13 @@ document.getElementById('hs-modal').addEventListener('click',e=>{if(e.target===d
 
 // ─── Boot ────────────────────────────────────────────────────────────────────
 async function refresh(){projects=await api.list();renderCards();render();}
-(async()=>{await refresh();resizeCanvas();window.addEventListener('resize',()=>{resizeCanvas();render();});maybeShowHsPrompt();})();
+(async()=>{
+  localStorage.setItem('dottie_token', TOKEN);
+  await refresh();
+  resizeCanvas();
+  window.addEventListener('resize',()=>{resizeCanvas();render();});
+  maybeShowHsPrompt();
+})();
 </script>
 </body>
 </html>

@@ -812,11 +812,16 @@ function renderCards(){
 }
 
 // ─── Modal ───────────────────────────────────────────────────────────────────
-document.getElementById('addBtn').addEventListener('click',()=>{document.getElementById('addModal').classList.add('visible');document.getElementById('newProjectName').focus();});
+document.getElementById('addBtn').addEventListener('click',()=>{
+  const inp=document.getElementById('newProjectName');
+  inp.placeholder=`Project ${projects.length+1}`;
+  document.getElementById('addModal').classList.add('visible');
+  inp.focus();
+});
 document.getElementById('cancelAdd').addEventListener('click',closeModal);
 document.getElementById('addModal').addEventListener('click',e=>{if(e.target===document.getElementById('addModal'))closeModal();});
 document.getElementById('newProjectName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('confirmAdd').click();if(e.key==='Escape')closeModal();});
-document.getElementById('confirmAdd').addEventListener('click',async()=>{const name=document.getElementById('newProjectName').value.trim();await api.add(name||'');closeModal();await refresh();});
+document.getElementById('confirmAdd').addEventListener('click',async()=>{const inp=document.getElementById('newProjectName');const name=inp.value.trim()||inp.placeholder;await api.add(name);closeModal();await refresh();});
 function closeModal(){document.getElementById('addModal').classList.remove('visible');document.getElementById('newProjectName').value='';}
 
 // ─── Boot ────────────────────────────────────────────────────────────────────

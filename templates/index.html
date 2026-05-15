@@ -296,6 +296,52 @@
     .prog-slider { flex: 1; cursor: pointer; }
     .prog-val { font-size: 12px; font-weight: 700; min-width: 30px; text-align: right; }
 
+    /* ── Home screen prompt ─────────────────────────────────────── */
+    #hs-modal {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.70); backdrop-filter: blur(6px);
+      align-items: flex-end; justify-content: center;
+      padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+    }
+    #hs-modal.visible { display: flex; }
+    .hs-sheet {
+      background: #1a1710;
+      border: 1px solid rgba(200,150,30,0.25);
+      border-radius: 24px;
+      padding: 28px 24px 24px;
+      max-width: 420px; width: calc(100% - 32px);
+      text-align: center;
+      box-shadow: 0 0 60px rgba(200,120,0,0.18), 0 30px 80px rgba(0,0,0,0.9);
+      animation: hs-up 0.3s ease;
+    }
+    @keyframes hs-up {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+    .hs-title { font-size: 20px; font-weight: 700; color: #f5ede0; margin-bottom: 6px; }
+    .hs-sub { font-size: 14px; color: rgba(255,255,255,0.45); margin-bottom: 22px; line-height: 1.5; }
+    .hs-steps {
+      text-align: left; background: #111009;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px; padding: 16px 18px; margin-bottom: 22px;
+    }
+    .hs-step { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: rgba(255,255,255,0.80); line-height: 1.4; }
+    .hs-step + .hs-step { margin-top: 14px; }
+    .hs-step-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #c8973a; color: #000;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .hs-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #c8973a, #e0b050);
+      border: none; border-radius: 14px;
+      color: #000; font-size: 16px; font-weight: 700;
+      font-family: inherit; cursor: pointer;
+    }
+
     /* ── Modal ──────────────────────────────────────────────────── */
     .modal-overlay {
       position: fixed; inset: 0;
@@ -444,6 +490,29 @@
   </div>
 
 
+</div>
+
+<!-- Home screen prompt -->
+<div id="hs-modal">
+  <div class="hs-sheet">
+    <div class="hs-title">Add Dottie to Your Home Screen</div>
+    <div class="hs-sub">Get one-tap access — no App Store needed.</div>
+    <div class="hs-steps">
+      <div class="hs-step">
+        <div class="hs-step-num">1</div>
+        <div>Tap the <strong>Share</strong> button&nbsp;<svg width="18" height="20" viewBox="0 0 18 20" fill="none" style="display:inline-block;vertical-align:middle;margin-bottom:2px;"><path d="M9 13V1M9 1L5.5 4.5M9 1L12.5 4.5" stroke="#c8973a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 10V17C1 18.1046 1.89543 19 3 19H15C16.1046 19 17 18.1046 17 17V10" stroke="#c8973a" stroke-width="1.8" stroke-linecap="round"/></svg>&nbsp;at the bottom of Safari</div>
+      </div>
+      <div class="hs-step">
+        <div class="hs-step-num">2</div>
+        <div>Scroll down and tap <strong style="color:#f5ede0">"Add to Home Screen"</strong></div>
+      </div>
+      <div class="hs-step">
+        <div class="hs-step-num">3</div>
+        <div>Tap <strong style="color:#f5ede0">Add</strong> — done! Dottie lives on your home screen.</div>
+      </div>
+    </div>
+    <button class="hs-btn" onclick="dismissHsPrompt()">Got It</button>
+  </div>
 </div>
 
 <!-- Modal -->
@@ -824,9 +893,23 @@ document.getElementById('newProjectName').addEventListener('keydown',e=>{if(e.ke
 document.getElementById('confirmAdd').addEventListener('click',async()=>{const inp=document.getElementById('newProjectName');const name=inp.value.trim()||inp.placeholder;await api.add(name);closeModal();await refresh();});
 function closeModal(){document.getElementById('addModal').classList.remove('visible');document.getElementById('newProjectName').value='';}
 
+// ─── Home screen prompt ───────────────────────────────────────────────────────
+function dismissHsPrompt(){
+  localStorage.setItem('dottie_hs_seen','1');
+  document.getElementById('hs-modal').classList.remove('visible');
+}
+function maybeShowHsPrompt(){
+  const isMobileSafari=/iP(hone|od|ad)/.test(navigator.userAgent)&&/WebKit/.test(navigator.userAgent)&&!/CriOS|FxiOS/.test(navigator.userAgent);
+  const isStandalone=window.navigator.standalone===true;
+  if(isMobileSafari&&!isStandalone&&!localStorage.getItem('dottie_hs_seen')){
+    setTimeout(()=>document.getElementById('hs-modal').classList.add('visible'),1500);
+  }
+}
+document.getElementById('hs-modal').addEventListener('click',e=>{if(e.target===document.getElementById('hs-modal'))dismissHsPrompt();});
+
 // ─── Boot ────────────────────────────────────────────────────────────────────
 async function refresh(){projects=await api.list();renderCards();render();}
-(async()=>{await refresh();resizeCanvas();window.addEventListener('resize',()=>{resizeCanvas();render();});})();
+(async()=>{await refresh();resizeCanvas();window.addEventListener('resize',()=>{resizeCanvas();render();});maybeShowHsPrompt();})();
 </script>
 </body>
 </html>

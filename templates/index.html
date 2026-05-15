@@ -75,13 +75,24 @@
 
     /* ── Header ────────────────────────────────────────────────── */
     .header-bar {
-      display: flex;
-      align-items: flex-start;
+      position: relative;
       margin-bottom: 22px;
       padding: 0 2px;
-      position: relative; z-index: 1;
+      z-index: 1;
+      text-align: center;
     }
-    .header-text { flex: 1; text-align: center; }
+    .header-text { text-align: center; }
+    .header-logo {
+      width: 110px; height: 110px;
+      border-radius: 26px;
+      display: block;
+      margin: 0 auto 10px;
+      object-fit: cover;
+    }
+    .add-btn {
+      position: absolute;
+      top: 0; right: 2px;
+    }
 
     .title-project-row {
       display: flex;
@@ -136,7 +147,7 @@
       cursor: pointer; color: rgba(255,255,255,0.70);
       font-size: 26px; font-weight: 200;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; margin-top: 12px;
+      flex-shrink: 0;
       transition: all 0.2s;
       box-shadow: 0 0 18px rgba(255, 110, 0, 0.15);
     }
@@ -383,16 +394,11 @@
 
   <!-- Header -->
   <div class="header-bar">
+    <button class="add-btn" id="addBtn">+</button>
     <div class="header-text">
-      <div class="title-project-row">
-        <div class="title-line"></div>
-        <span class="title-project-text">PROJECT</span>
-        <div class="title-line r"></div>
-      </div>
-      <div class="title-glow-wrap"><div class="title-dot-race">DOTTIE</div></div>
+      <img src="/static/logo.png" alt="Dottie" class="header-logo">
       <p class="app-subtitle">TRACK PROGRESS. DRIVE RESULTS.</p>
     </div>
-    <button class="add-btn" id="addBtn">+</button>
   </div>
 
   <!-- Track -->

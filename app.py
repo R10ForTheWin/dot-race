@@ -16,10 +16,19 @@ def data_file(token):
     return os.path.join(DATA_DIR, f'{safe}.json')
 
 
+SEED_PROJECTS = [
+    {"name": "Project 1 Name Here", "progress": 0.20, "colorHex": "#58A6FF", "lane": "racing"},
+    {"name": "Project 2 Name Here", "progress": 0.55, "colorHex": "#68D66B", "lane": "racing"},
+    {"name": "Project 3 Name Here", "progress": 0.80, "colorHex": "#FFB703", "lane": "racing"},
+]
+
+
 def load_projects(token):
     f = data_file(token)
     if not os.path.exists(f):
-        return []
+        defaults = [{"id": str(uuid.uuid4()), **p} for p in SEED_PROJECTS]
+        save_projects(token, defaults)
+        return defaults
     with open(f) as fh:
         return json.load(fh)
 

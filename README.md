@@ -4,4 +4,4 @@
 
 <h1 align="center">Dottie</h1>
 
-<p align="center">Track progress. Drive results.</p>
+<p align="center">A visual dot race for tracking project progression</p>

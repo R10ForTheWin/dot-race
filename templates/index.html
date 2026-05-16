@@ -293,7 +293,7 @@
 
     .prog-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
     .prog-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: rgba(200,155,50,0.45); white-space: nowrap; }
-    .prog-slider { flex: 1; cursor: pointer; }
+    .prog-slider { flex: 1; cursor: pointer; touch-action: none; }
     .prog-val { font-size: 12px; font-weight: 700; min-width: 30px; text-align: right; }
 
     /* ── Home screen prompt ─────────────────────────────────────── */
@@ -834,7 +834,7 @@ function renderCards(){
         <div style="width:20px;height:20px;border-radius:50%;flex-shrink:0;background:${p.colorHex};box-shadow:0 0 16px ${rgba(p.colorHex,0.85)},0 0 6px ${rgba(p.colorHex,0.6)}"></div>
         <div class="proj-body">
           <div class="proj-name-row">
-            <span class="proj-name">${esc(p.name)}</span>
+            ${isExp?`<input class="name-input proj-name" value="${esc(p.name)}" data-id="${p.id}" spellcheck="false" style="background:none;border:none;padding:0;color:#fff;flex:1;min-width:0">`:`<span class="proj-name">${esc(p.name)}</span>`}
             ${isRacing?`<span class="proj-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>`:`<span style="font-size:10px;font-weight:700;letter-spacing:0.06em;color:rgba(255,255,255,0.28);text-transform:uppercase">${p.lane}</span>`}
           </div>
           ${isRacing?`<div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${rgba(p.colorHex,0.7)})"></div></div>`:''}
@@ -843,7 +843,6 @@ function renderCards(){
       </div>
       ${isExp?`
       <div class="proj-controls">
-        <input class="name-input" value="${esc(p.name)}" data-id="${p.id}" spellcheck="false" style="width:100%;margin-bottom:12px">
         <div class="lane-selector"${isRacing?' style="margin-bottom:12px"':''}>
           ${['bullpen','racing','retired'].map(l=>`<button class="lane-btn${p.lane===l?' active':''}" data-id="${p.id}" data-lane="${l}" style="${p.lane===l?laneStyle(l):''}">${l[0].toUpperCase()+l.slice(1)}</button>`).join('')}
         </div>
@@ -871,6 +870,8 @@ function renderCards(){
   pl.querySelectorAll('.lane-btn').forEach(b=>b.addEventListener('click',async e=>{e.stopPropagation();await api.patch(b.dataset.id,{lane:b.dataset.lane});await refresh();}));
   pl.querySelectorAll('.prog-slider').forEach(s=>{
     s.addEventListener('click',e=>e.stopPropagation());
+    s.addEventListener('touchstart',e=>e.stopPropagation(),{passive:false});
+    s.addEventListener('touchmove',e=>e.stopPropagation(),{passive:false});
     s.addEventListener('input',()=>{
       const pct=parseInt(s.value);
       s.closest('.proj-controls').querySelector('.prog-val').textContent=pct+'%';

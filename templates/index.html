@@ -822,11 +822,10 @@ function renderCards(){
         </div>
       </div>
       <div class="proj-controls">
-        ${isRacing?`<div class="prog-bar-bg" style="margin-bottom:12px"><div class="prog-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${rgba(p.colorHex,0.7)})"></div></div>`:''}
+        ${isRacing?`<div class="prog-bar-bg interactive-bar" data-id="${p.id}" style="margin-bottom:12px;cursor:pointer;height:8px;border-radius:4px"><div class="prog-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${rgba(p.colorHex,0.7)});border-radius:4px"></div></div>`:''}
         <div class="lane-selector"${isRacing?' style="margin-bottom:12px"':''}>
           ${['bullpen','racing','retired'].map(l=>`<button class="lane-btn${p.lane===l?' active':''}" data-id="${p.id}" data-lane="${l}" style="${p.lane===l?laneStyle(l):''}">${l[0].toUpperCase()+l.slice(1)}</button>`).join('')}
         </div>
-        ${isRacing?`<div class="prog-row"><span class="prog-label">PROGRESS</span><input type="range" class="prog-slider" min="0" max="100" value="${Math.round(p.progress*100)}" data-id="${p.id}" style="accent-color:${p.colorHex}"><span class="prog-val" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span></div>`:''}
         <div style="display:flex;justify-content:flex-end;margin-top:12px">
           <button class="delete-btn" data-id="${p.id}" style="font-size:13px;color:rgba(255,80,80,0.65)">Delete</button>
         </div>
@@ -841,20 +840,24 @@ function renderCards(){
     inp.addEventListener('blur',async()=>{await api.patch(inp.dataset.id,{name:inp.value});await refresh();});
   });
   pl.querySelectorAll('.lane-btn').forEach(b=>b.addEventListener('click',async e=>{e.stopPropagation();await api.patch(b.dataset.id,{lane:b.dataset.lane});await refresh();}));
-  pl.querySelectorAll('.prog-slider').forEach(s=>{
-    s.addEventListener('click',e=>e.stopPropagation());
-    s.addEventListener('touchstart',e=>e.stopPropagation(),{passive:false});
-    s.addEventListener('touchmove',e=>e.stopPropagation(),{passive:false});
-    s.addEventListener('input',()=>{
-      const pct=parseInt(s.value);
-      const controls=s.closest('.proj-controls');
-      controls.querySelector('.prog-val').textContent=pct+'%';
-      const fill=controls.querySelector('.prog-bar-fill');
-      if(fill)fill.style.width=pct+'%';
-      const p=projects.find(p=>p.id===s.dataset.id);
+  pl.querySelectorAll('.interactive-bar').forEach(bar=>{
+    const fill=bar.querySelector('.prog-bar-fill');
+    const id=bar.dataset.id;
+    function setPct(clientX){
+      const rect=bar.getBoundingClientRect();
+      const pct=Math.min(100,Math.max(0,Math.round((clientX-rect.left)/rect.width*100)));
+      fill.style.width=pct+'%';
+      const p=projects.find(p=>p.id===id);
       if(p){p.progress=pct/100;render();}
-    });
-    s.addEventListener('change',async()=>{await api.patch(s.dataset.id,{progress:parseInt(s.value)/100});await refresh();});
+      return pct;
+    }
+    let dragging=false;
+    bar.addEventListener('mousedown',e=>{e.stopPropagation();dragging=true;setPct(e.clientX);});
+    window.addEventListener('mousemove',e=>{if(dragging)setPct(e.clientX);});
+    window.addEventListener('mouseup',async e=>{if(!dragging)return;dragging=false;const pct=setPct(e.clientX);await api.patch(id,{progress:pct/100});await refresh();});
+    bar.addEventListener('touchstart',e=>{e.stopPropagation();e.preventDefault();dragging=true;setPct(e.touches[0].clientX);},{passive:false});
+    bar.addEventListener('touchmove',e=>{e.stopPropagation();e.preventDefault();if(dragging)setPct(e.touches[0].clientX);},{passive:false});
+    bar.addEventListener('touchend',async e=>{e.stopPropagation();if(!dragging)return;dragging=false;const pct=Math.min(100,Math.max(0,Math.round((e.changedTouches[0].clientX-bar.getBoundingClientRect().left)/bar.getBoundingClientRect().width*100)));await api.patch(id,{progress:pct/100});await refresh();});
   });
 }
 

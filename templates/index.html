@@ -819,7 +819,6 @@ function renderCards(){
             <input class="name-input proj-name" value="${esc(p.name)}" data-id="${p.id}" spellcheck="false" style="background:none;border:none;padding:0;color:#fff;flex:1;min-width:0">
             ${isRacing?`<span class="proj-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>`:`<span style="font-size:10px;font-weight:700;letter-spacing:0.06em;color:rgba(255,255,255,0.28);text-transform:uppercase">${p.lane}</span>`}
           </div>
-          ${isRacing?`<div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${rgba(p.colorHex,0.7)})"></div></div>`:''}
         </div>
       </div>
       <div class="proj-controls">

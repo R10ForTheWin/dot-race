@@ -214,22 +214,6 @@
     .proj-name-row { display: flex; align-items: center; gap: 8px; }
     .proj-name { font-size: 19px; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.2px; }
     .proj-pct  { font-size: 18px; font-weight: 700; flex-shrink: 0; }
-    .proj-chev {
-      flex-shrink: 0;
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.14);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; color: rgba(255,255,255,0.65);
-      transition: transform 0.2s, background 0.2s, color 0.2s;
-    }
-    .proj-row.expanded .proj-chev {
-      transform: rotate(90deg);
-      background: rgba(200,150,30,0.18);
-      border-color: rgba(200,150,30,0.40);
-      color: #c8973a;
-    }
     .proj-controls {
       padding: 14px 16px;
       border-top: 1px solid rgba(255,255,255,0.06);
@@ -533,7 +517,6 @@ const TOKEN = '{{ token }}';
 let projects = [];
 let dotLanePos = {};
 let drag = null;
-let expandedId = null;
 
 // ─── API ─────────────────────────────────────────────────────────────────────
 const api = {
@@ -827,21 +810,18 @@ function renderCards(){
   const pl=document.getElementById('projectsList');
   pl.innerHTML=(projects.length===0?'<div class="empty-label" style="padding:0 16px 14px">No projects yet</div>':projects.map(p=>{
     const isRacing=p.lane==='racing';
-    const isExp=expandedId===p.id;
     return `
-    <div class="proj-row${isExp?' expanded':''}" data-id="${p.id}">
+    <div class="proj-row" data-id="${p.id}">
       <div class="proj-header">
         <div style="width:20px;height:20px;border-radius:50%;flex-shrink:0;background:${p.colorHex};box-shadow:0 0 16px ${rgba(p.colorHex,0.85)},0 0 6px ${rgba(p.colorHex,0.6)}"></div>
         <div class="proj-body">
           <div class="proj-name-row">
-            ${isExp?`<input class="name-input proj-name" value="${esc(p.name)}" data-id="${p.id}" spellcheck="false" style="background:none;border:none;padding:0;color:#fff;flex:1;min-width:0">`:`<span class="proj-name">${esc(p.name)}</span>`}
+            <input class="name-input proj-name" value="${esc(p.name)}" data-id="${p.id}" spellcheck="false" style="background:none;border:none;padding:0;color:#fff;flex:1;min-width:0">
             ${isRacing?`<span class="proj-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>`:`<span style="font-size:10px;font-weight:700;letter-spacing:0.06em;color:rgba(255,255,255,0.28);text-transform:uppercase">${p.lane}</span>`}
           </div>
           ${isRacing?`<div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${rgba(p.colorHex,0.7)})"></div></div>`:''}
         </div>
-        <span class="proj-chev">›</span>
       </div>
-      ${isExp?`
       <div class="proj-controls">
         <div class="lane-selector"${isRacing?' style="margin-bottom:12px"':''}>
           ${['bullpen','racing','retired'].map(l=>`<button class="lane-btn${p.lane===l?' active':''}" data-id="${p.id}" data-lane="${l}" style="${p.lane===l?laneStyle(l):''}">${l[0].toUpperCase()+l.slice(1)}</button>`).join('')}
@@ -850,18 +830,11 @@ function renderCards(){
         <div style="display:flex;justify-content:flex-end;margin-top:12px">
           <button class="delete-btn" data-id="${p.id}" style="font-size:13px;color:rgba(255,80,80,0.65)">Delete</button>
         </div>
-      </div>`:''}
+      </div>
     </div>`;
   }).join(''));
 
-  pl.querySelectorAll('.proj-header').forEach(h=>{
-    h.addEventListener('click',()=>{
-      const id=h.closest('.proj-row').dataset.id;
-      expandedId=(expandedId===id?null:id);
-      renderCards();
-    });
-  });
-  pl.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',async e=>{e.stopPropagation();await api.del(b.dataset.id);expandedId=null;await refresh();}));
+  pl.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',async e=>{e.stopPropagation();await api.del(b.dataset.id);await refresh();}));
   pl.querySelectorAll('.name-input').forEach(inp=>{
     inp.addEventListener('click',e=>e.stopPropagation());
     inp.addEventListener('keydown',e=>{if(e.key==='Enter')inp.blur();});

@@ -822,6 +822,7 @@ function renderCards(){
         </div>
       </div>
       <div class="proj-controls">
+        ${isRacing?`<div class="prog-bar-bg" style="margin-bottom:12px"><div class="prog-bar-fill" style="width:${Math.round(p.progress*100)}%;background:linear-gradient(90deg,${p.colorHex},${rgba(p.colorHex,0.7)})"></div></div>`:''}
         <div class="lane-selector"${isRacing?' style="margin-bottom:12px"':''}>
           ${['bullpen','racing','retired'].map(l=>`<button class="lane-btn${p.lane===l?' active':''}" data-id="${p.id}" data-lane="${l}" style="${p.lane===l?laneStyle(l):''}">${l[0].toUpperCase()+l.slice(1)}</button>`).join('')}
         </div>
@@ -846,7 +847,10 @@ function renderCards(){
     s.addEventListener('touchmove',e=>e.stopPropagation(),{passive:false});
     s.addEventListener('input',()=>{
       const pct=parseInt(s.value);
-      s.closest('.proj-controls').querySelector('.prog-val').textContent=pct+'%';
+      const controls=s.closest('.proj-controls');
+      controls.querySelector('.prog-val').textContent=pct+'%';
+      const fill=controls.querySelector('.prog-bar-fill');
+      if(fill)fill.style.width=pct+'%';
       const p=projects.find(p=>p.id===s.dataset.id);
       if(p){p.progress=pct/100;render();}
     });

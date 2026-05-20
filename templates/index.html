@@ -855,15 +855,13 @@ function renderCards(){
   pl.querySelectorAll('.bar-slider').forEach(s=>{
     s.addEventListener('input',()=>{
       const pct=parseInt(s.value);
+      const id=s.dataset.id;
       const color=s.dataset.color;
       s.style.background=`linear-gradient(to right,${color} ${pct}%,rgba(255,255,255,0.09) ${pct}%)`;
-      const p=projects.find(p=>p.id===s.dataset.id);
-      if(p){
-        p.progress=pct/100;
-        render();
-        const pctEl=s.closest('.proj-row')?.querySelector('.proj-pct');
-        if(pctEl) pctEl.textContent=pct+'%';
-      }
+      const pctEl=document.querySelector(`.proj-row[data-id="${id}"] .proj-pct`);
+      if(pctEl) pctEl.textContent=pct+'%';
+      const p=projects.find(p=>p.id===id);
+      if(p){p.progress=pct/100;render();}
     });
     s.addEventListener('change',async()=>{await api.patch(s.dataset.id,{progress:parseInt(s.value)/100});await refresh();});
   });

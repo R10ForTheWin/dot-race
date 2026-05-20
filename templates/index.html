@@ -858,7 +858,7 @@ function renderCards(){
       const id=s.dataset.id;
       const color=s.dataset.color;
       s.style.background=`linear-gradient(to right,${color} ${pct}%,rgba(255,255,255,0.09) ${pct}%)`;
-      const pctEl=document.querySelector(`.proj-row[data-id="${id}"] .proj-pct`);
+      const pctEl=s.closest('.proj-row').querySelector('.proj-pct');
       if(pctEl) pctEl.textContent=pct+'%';
       const p=projects.find(p=>p.id===id);
       if(p){p.progress=pct/100;render();}

@@ -279,7 +279,7 @@
       -webkit-appearance: none; appearance: none;
       width: 100%; height: 8px; border-radius: 4px;
       outline: none; cursor: pointer; display: block;
-      touch-action: pan-y;
+      touch-action: none;
       margin-bottom: 12px;
     }
     .bar-slider::-webkit-slider-runnable-track {
@@ -829,7 +829,7 @@ function renderCards(){
         <div class="proj-body">
           <div class="proj-name-row">
             <input class="name-input proj-name" value="${esc(p.name)}" data-id="${p.id}" spellcheck="false" style="background:none;border:none;padding:0;color:#fff;flex:1;min-width:0">
-            ${isRacing?`<span class="proj-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>`:`<span style="font-size:10px;font-weight:700;letter-spacing:0.06em;color:rgba(255,255,255,0.28);text-transform:uppercase">${p.lane}</span>`}
+            ${isRacing?`<span id="pct-${p.id}" class="proj-pct" style="color:${p.colorHex}">${Math.round(p.progress*100)}%</span>`:`<span style="font-size:10px;font-weight:700;letter-spacing:0.06em;color:rgba(255,255,255,0.28);text-transform:uppercase">${p.lane}</span>`}
           </div>
         </div>
       </div>
@@ -858,7 +858,7 @@ function renderCards(){
       const id=s.dataset.id;
       const color=s.dataset.color;
       s.style.background=`linear-gradient(to right,${color} ${pct}%,rgba(255,255,255,0.09) ${pct}%)`;
-      const pctEl=s.closest('.proj-row').querySelector('.proj-pct');
+      const pctEl=document.getElementById('pct-'+id);
       if(pctEl) pctEl.textContent=pct+'%';
       const p=projects.find(p=>p.id===id);
       if(p){p.progress=pct/100;render();}
